@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: bible,shortcode,quote
 Requires at least: 3.0.1
 Tested up to: 3.9.2
-Stable tag: 1.2
+Stable tag: 1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,6 +82,9 @@ Make sure you are using the italian standard notation and not the english notati
 
 == Changelog ==
 
+= 1.3 =
+* Finalmente riesco a capire come far fare la notifica di upgrade del plugin! LOL
+
 = 1.2 =
 * Corregge la notifica di upgrade del plugin
 
@@ -94,6 +97,9 @@ Make sure you are using the italian standard notation and not the english notati
 
 
 == Upgrade Notice ==
+
+= 1.3 =
+Si prega effettuare l'upgrade alla versione 1.2 che corregge un paio di bug (errori con gli spazi bianchi, e errori con server che hanno il safe_mode attivato).
 
 = 1.2 =
 Si prega effettuare l'upgrade alla versione 1.2 che corregge un paio di bug (errori con gli spazi bianchi, e errori con server che hanno il safe_mode attivato).

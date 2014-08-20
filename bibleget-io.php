@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: BibleGet IO
-Version: 1.0
+Version: 1.3
 Plugin URI: http://www.bibleget.de/
 Description: Effettua citazioni della Bibbia al volo, con shortcode [bibleget].
 Author: John Romano D'Orazio
@@ -43,7 +43,7 @@ function bibleget_shortcode($atts) {
     'format' => "html"  // default value if none supplied
     ), $atts);
 
-    $a["query"] = preg_replace("/\s+/",$a["query"]);
+    $a["query"] = preg_replace('/\s+/', '', $a["query"]);
     $ch = curl_init("www.bibleget.de/query/?query=".$a["query"]."&return=".$a["format"]);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 
