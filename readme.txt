@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: bible,shortcode,quote
 Requires at least: 3.0.1
 Tested up to: 3.9.2
-Stable tag: 1.0
+Stable tag: 1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -18,10 +18,7 @@ Questo plugin permette di utilizzare uno shortcode all’interno di articoli o p
 che permette facilmente di effettuare citazioni della Sacra Scrittura. 
 L’utilizzo dello shortcode è il seguente:
 
-  
-
 [bibleget query="[inserire query qui]"]  
-
 
 Per esempio: [bibleget query="Genesi 1,1-10"] oppure [bibleget query="Gen1,1-10"] (con o senza spazio tra libro e capitolo)
 
@@ -85,11 +82,16 @@ Make sure you are using the italian standard notation and not the english notati
 
 == Changelog ==
 
+= 1.1 =
+* Corretto bug quando c'era uno spazio nella query
+* Corretto bug quando il server è in safe_mode
+
 = 1.0 =
 * Plugin created
 
+
 == Upgrade Notice ==
 
-= 1.0 =
-No upgrade needed yet, still at the first version.
+= 1.1 =
+Si prega effettuare l'upgrade alla versione 1.1 che corregge un paio di bug.
 

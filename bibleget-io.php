@@ -36,7 +36,6 @@ if ( ! function_exists( 'add_filter' ) ) {
 
 
 function bibleget_shortcode($atts) {
-  //$options = get_option('bibleget_settings', array() );
   wp_enqueue_style('biblegetio-styles', plugins_url('css/styles.css', __FILE__), false, '1.0', 'all');
   
   $a = shortcode_atts(array(
@@ -44,31 +43,25 @@ function bibleget_shortcode($atts) {
     'format' => "html"  // default value if none supplied
     ), $atts);
 
+    $a["query"] = preg_replace("/\s+/",$a["query"]);
     $ch = curl_init("www.bibleget.de/query/?query=".$a["query"]."&return=".$a["format"]);
-    //curl_setopt($ch, CURLOPT_HEADER, 0);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-    curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
+
+    if( ini_get('safe_mode') ){ 
+       // safe mode is on, we can't use some settings 
+    }else{ 
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+        curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
+    }  
+    
     $output = curl_exec($ch);
-
-    //$response = curl_getinfo($ch, CURLINFO_HTTP_CODE); 
-    $start = strpos($output, "<style");
-    $end = strpos($output, "</style");
-
-    $output = substr($output,0,$start) . substr($output,$end,strlen($output));
-
-    $start = strpos($output, "<title");
-    $end = strpos($output, "</title");
-
-    $output = substr($output,0,$start) . substr($output,$end,strlen($output));
+    // remove style and title tags from the output
+    $output = substr($output,0,strpos($output, "<style")) . substr($output,strpos($output, "</style"),strlen($output));
+    $output = substr($output,0,strpos($output, "<title")) . substr($output,strpos($output, "</title"),strlen($output));
 
     curl_close($ch);
     return '<div class="bibleget-quote-div">' . $output . '</div>';
-
 }
 add_shortcode('bibleget', 'bibleget_shortcode');
 
-
 require_once(plugin_dir_path( __FILE__ ) . "options.php");
-
-?>
