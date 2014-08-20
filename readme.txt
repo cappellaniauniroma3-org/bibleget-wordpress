@@ -93,5 +93,7 @@ Make sure you are using the italian standard notation and not the english notati
 == Upgrade Notice ==
 
 = 1.1 =
-Si prega effettuare l'upgrade alla versione 1.1 che corregge un paio di bug.
+Si prega effettuare l'upgrade alla versione 1.1 che corregge un paio di bug (errori con gli spazi bianchi, e errori con server che hanno safe_mode attivo).
 
+= 1.0 =
+Versione iniziale, non pienamente testato.
