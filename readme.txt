@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: bible,shortcode,quote
 Requires at least: 3.0.1
 Tested up to: 3.9.2
-Stable tag: 1.3
+Stable tag: 1.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -82,15 +82,11 @@ Make sure you are using the italian standard notation and not the english notati
 
 == Changelog ==
 
-= 1.3 =
-* Finalmente riesco a capire come far fare la notifica di upgrade del plugin! LOL
-
-= 1.2 =
-* Corregge la notifica di upgrade del plugin
+= 1.4 =
+* Corretto bug quando il server è in safe_mode oppure è settato open_basedir (alcuni server con hosting condiviso)
 
 = 1.1 =
 * Corretto bug quando c'era uno spazio nella query
-* Corretto bug quando il server è in safe_mode
 
 = 1.0 =
 * Plugin created
@@ -98,14 +94,11 @@ Make sure you are using the italian standard notation and not the english notati
 
 == Upgrade Notice ==
 
-= 1.3 =
-Si prega effettuare l'upgrade alla versione 1.2 che corregge un paio di bug (errori con gli spazi bianchi, e errori con server che hanno il safe_mode attivato).
-
-= 1.2 =
-Si prega effettuare l'upgrade alla versione 1.2 che corregge un paio di bug (errori con gli spazi bianchi, e errori con server che hanno il safe_mode attivato).
+= 1.4 =
+Si prega effettuare l'upgrade alla versione 1.4 che corregge un paio di bug (errori con server che hanno il safe_mode attivato oppure la direttiva open_basedir settata).
 
 = 1.1 =
-Si prega effettuare l'upgrade alla versione 1.1 che corregge un paio di bug (errori con gli spazi bianchi, e errori con server che hanno safe_mode attivo).
+Si prega effettuare l'upgrade alla versione 1.1 che corregge un paio di bug (errori con gli spazi bianchi).
 
 = 1.0 =
 Versione iniziale, non pienamente testato.
