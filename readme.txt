@@ -1,10 +1,10 @@
-﻿=== BibleGet IO ===
+﻿=== BibleGet I/O ===
 Contributors: Lwangaman
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HDS7XQKGFHJ58
 Tags: bible,shortcode,quote
 Requires at least: 3.0.1
-Tested up to: 3.9.2
-Stable tag: 1.4
+Tested up to: 4.0.0
+Stable tag: 1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,8 +56,8 @@ che permettono di cambiare la presentazione delle citazioni bibliche
 in modo che sia più confacente allo stile del proprio blog / sito WordPress.
 Una volta cambiate le opzioni, ricordati di cliccare sul pulsante “Salva le modifiche”!
 
-[BibleGet IO](
-http://www.bibleget.de/
+[BibleGet I/O](
+http://www.bibleget.io/
  "BibleGet IO Website")
 
 == Installation ==
@@ -70,10 +70,12 @@ http://www.bibleget.de/
 = Which version of the Bible am I getting? =
 
 For the time being, the only version is the Italian CEI 2008. Over time more version in more languages will be available.
+Per ora, unica versione della Bibbia disponibile è CEI 2008. Col tempo si potranno aggiungere altre versioni in altre lingue.
 
 = How come my query doesn't work? I'm using the common notation for Bible citations. =
 
 Make sure you are using the italian standard notation and not the english notation.
+Se la tua query biblica non sta riuscendo, assicurati di utilizzare notazione standard italiana corretta.
 
 == Screenshots ==
 
@@ -82,8 +84,18 @@ Make sure you are using the italian standard notation and not the english notati
 
 == Changelog ==
 
+= 1.5 =
+* Compatibile con Wordpress 4.0 "Benny"
+* Aggiunte verifiche locali per validità delle query
+* Corretto bug con preg_match_all e versioni di PHP < 5.4
+* Effettuato trasferimento al dominio definitivo di BibleGet http://bibleget.io
+
 = 1.4 =
 * Corretto bug quando il server è in safe_mode oppure è settato open_basedir (alcuni server con hosting condiviso)
+
+= 1.3 =
+
+= 1.2 =
 
 = 1.1 =
 * Corretto bug quando c'era uno spazio nella query
@@ -94,8 +106,16 @@ Make sure you are using the italian standard notation and not the english notati
 
 == Upgrade Notice ==
 
+
+= 1.5 =
+Si prega aggiornare alla versione 1.5, compatibile con Wordpress 4.0.
+
 = 1.4 =
 Si prega effettuare l'upgrade alla versione 1.4 che corregge un paio di bug (errori con server che hanno il safe_mode attivato oppure la direttiva open_basedir settata).
+
+= 1.3 =
+
+= 1.2 =
 
 = 1.1 =
 Si prega effettuare l'upgrade alla versione 1.1 che corregge un paio di bug (errori con gli spazi bianchi).
