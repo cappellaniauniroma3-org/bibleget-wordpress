@@ -7,6 +7,8 @@ class MySettingsPage
      */
     private $options;
     private $options_page_hook;
+    private $safe_fonts;
+    
     /**
      * Start up
      */
@@ -23,14 +25,15 @@ class MySettingsPage
     {
         // This page will be under "Settings" 
         $this->options_page_hook = add_options_page(
-            'BibleGet IO Settings',               // $page_title
-            'BibleGet IO Settings',               // $menu_title
+            'BibleGet I/O Settings',               // $page_title
+            'BibleGet I/O',               // $menu_title
             'manage_options',                     // $capability
             'bibleget-settings-admin',            // $menu_slug (Page ID)
             array( $this, 'create_admin_page' )   // Callback Function
         );
         
         add_action('admin_enqueue_scripts', array( $this, 'admin_print_styles') );
+        add_action('admin_enqueue_scripts', array( $this, 'admin_print_scripts') );
         add_action('load-'.$this->options_page_hook, array( $this, 'do_on_my_plugin_settings_save') );
 
     }
@@ -42,10 +45,32 @@ class MySettingsPage
     {
         // Set class property
         $this->options = get_option( 'bibleget_settings' );
+        $this->safe_fonts = array(
+    			array("font-family" => "Arial", "fallback" => "Helvetica", "generic-family" => "sans-serif"),
+    			array("font-family" => "Arial Black", "fallback" => "Gadget", "generic-family" => "sans-serif"),
+    			array("font-family" => "Book Antiqua", "fallback" => "Palatino", "generic-family" => "serif"),
+    			array("font-family" => "Courier New", "fallback" => "Courier", "generic-family" => "monospace"),
+    			array("font-family" => "Georgia", "generic-family" => "serif"),
+    			array("font-family" => "Impact", "fallback" => "Charcoal", "generic-family" => "sans-serif"),
+    			array("font-family" => "Lucida Console", "fallback" => "Monaco", "generic-family" => "monospace"),
+    			array("font-family" => "Lucida Sans Unicode", "fallback" => "Lucida Grande", "generic-family" => "sans-serif"),
+    			array("font-family" => "Palatino Linotype", "fallback" => "Palatino", "generic-family" => "serif"),
+    			array("font-family" => "Tahoma", "fallback" => "Geneva", "generic-family" => "sans-serif"),
+    			array("font-family" => "Times New Roman", "fallback" => "Times", "generic-family" => "serif"),
+    			array("font-family" => "Trebuchet MS", "fallback" => "Helvetica", "generic-family" => "sans-serif"),
+    			array("font-family" => "Verdana", "fallback" => "Geneva", "generic-family" => "sans-serif")
+    	);
+        
+        $vsnmstyles = array();
+        if(isset($this->options['fontstyle_versenumbers'] ) && $this->options['fontstyle_versenumbers']){
+        	$vsnmstyles = explode(",",esc_attr( $this->options['fontstyle_versenumbers']));
+        }
+        
         ?>
-        <div class="wrap">
+        <div id="page-wrap">
             <?php screen_icon(); ?>
-            <h2 id="bibleget-h2">BibleGet IO Settings</h2>           
+            <h2 id="bibleget-h2"><?php _e("BibleGet IO Settings","bibleget-io") ?></h2>           
+            <div id="form-wrapper">
             <form method="post" action="options.php">
             <?php
                 // This prints out all hidden setting fields
@@ -54,10 +79,29 @@ class MySettingsPage
                 submit_button(); 
             ?>
             </form>
+            </div>
+            <div>
+            <fieldset id="preview">
+            <legend><?php _e("Preview","bibleget-io") ?></legend>
+            	<p class="bibleversion">CEI2008</p>
+            	<p class="bookchapter"><span class="biblebook"><?php _e("Genesis","bibleget-io") ?></span> <span class="biblechapter">1</span></p>
+            	<p class="verses">
+            		<span class="bibleversenumber<?php if(in_array("superscript",$vsnmstyles)){ echo " sup";}else if(in_array("subscript",$vsnmstyle)){ echo " sub";} ?>">1</span><span class="bibleversetext"><?php _e("In the beginning, when God created the heavens and the earth—","bibleget-io") ?></span> <span class="bibleversenumber<?php if(in_array("superscript",$vsnmstyles)){ echo " sup";}else if(in_array("subscript",$vsnmstyle)){ echo " sub";} ?>">2</span><span class="bibleversetext"><?php _e("and the earth was without form or shape, with darkness over the abyss and a mighty wind sweeping over the waters—","bibleget-io") ?></span> <span class="bibleversenumber<?php if(in_array("superscript",$vsnmstyles)){ echo " sup";}else if(in_array("subscript",$vsnmstyle)){ echo " sub";} ?>">3</span><span class="bibleversetext"><?php _e("Then God said: Let there be light, and there was light.","bibleget-io") ?></span>
+            	</p>
+            </fieldset>
+            </div>
+            <div id="page-clear"></div>
         </div>
         <?php
     }
 
+    public function get_font_index($fontfamily){
+    	foreach($this->safe_fonts as $index => $font){
+    		if($font["font-family"] == $fontfamily){ return $index; }
+    	}
+    	return false;
+    }
+    
     /**
      * Register and add settings
      */
@@ -72,15 +116,14 @@ class MySettingsPage
 
         add_settings_section(
             'bibleget_settings_section', // ID
-            'Font & Style Settings', // Title
+            __('Font & Style Settings',"bibleget-io"), // Title
             array( $this, 'print_section_info' ), // Callback
             'bibleget-settings-admin' // Page
         );  
 
-
         add_settings_field(
             'fontfamily_bibleget', // ID
-            'Font Family per le Citazioni Bibliche', // Title 
+            __('Font Family for Biblical Quotes',"bibleget-io"), // Title 
             array( $this, 'fontfamily_bibleget_callback' ), // Callback
             'bibleget-settings-admin', // Page
             'bibleget_settings_section' // Section           
@@ -88,7 +131,7 @@ class MySettingsPage
 
         add_settings_field(
             'fontsize_bookchapter', 
-            'Font Size for Books and Chapters', 
+            __('Font Size for Books and Chapters',"bibleget-io"), 
             array( $this, 'fontsize_bookchapter_callback' ), 
             'bibleget-settings-admin', 
             'bibleget_settings_section'
@@ -96,7 +139,7 @@ class MySettingsPage
 
         add_settings_field(
             'fontsize_versenumbers', 
-            'Font Size for Verse Numbers', 
+            __('Font Size for Verse Numbers',"bibleget-io"), 
             array( $this, 'fontsize_versenumbers_callback' ), 
             'bibleget-settings-admin', 
             'bibleget_settings_section'
@@ -104,7 +147,7 @@ class MySettingsPage
 
         add_settings_field(
             'fontsize_verses', 
-            'Font Size for Text of Verses', 
+            __('Font Size for Text of Verses',"bibleget-io"), 
             array( $this, 'fontsize_verses_callback' ), 
             'bibleget-settings-admin', 
             'bibleget_settings_section'
@@ -112,7 +155,7 @@ class MySettingsPage
 
         add_settings_field(
             'fontstyle_bookchapter', 
-            'Font Style for Books and Chapters (can use any combination of the following values, separated by comma: bold,italic)', 
+            __('Font Style for Books and Chapters',"bibleget-io"), 
             array( $this, 'fontstyle_bookchapter_callback' ), 
             'bibleget-settings-admin', 
             'bibleget_settings_section'
@@ -120,7 +163,7 @@ class MySettingsPage
 
         add_settings_field(
             'fontstyle_versenumbers', 
-            'Font Style for Verse Numbers (can use any combination of the following values, separated by comma: bold,italic,superscript)', 
+            __('Font Style for Verse Numbers',"bibleget-io"), 
             array( $this, 'fontstyle_versenumbers_callback' ), 
             'bibleget-settings-admin', 
             'bibleget_settings_section'
@@ -128,7 +171,7 @@ class MySettingsPage
 
         add_settings_field(
             'fontstyle_verses', 
-            'Font Style for Verses (can use any combination of the following values, separated by comma: bold,italic)', 
+            __('Font Style for Verses',"bibleget-io"), 
             array( $this, 'fontstyle_verses_callback' ), 
             'bibleget-settings-admin', 
             'bibleget_settings_section'
@@ -136,7 +179,7 @@ class MySettingsPage
 
         add_settings_field(
             'fontcolor_bookchapter', 
-            'Font Color for Book and Chapter', 
+            __('Font Color for Book and Chapter',"bibleget-io"), 
             array( $this, 'fontcolor_bookchapter_callback' ), 
             'bibleget-settings-admin', 
             'bibleget_settings_section'
@@ -144,7 +187,7 @@ class MySettingsPage
 
         add_settings_field(
             'fontcolor_versenumbers', 
-            'Font Color for Verse Numbers', 
+            __('Font Color for Verse Numbers',"bibleget-io"), 
             array( $this, 'fontcolor_versenumbers_callback' ), 
             'bibleget-settings-admin', 
             'bibleget_settings_section'
@@ -152,7 +195,7 @@ class MySettingsPage
 
         add_settings_field(
             'fontcolor_verses', 
-            'Font Color for Text of Verses', 
+            __('Font Color for Text of Verses',"bibleget-io"), 
             array( $this, 'fontcolor_verses_callback' ), 
             'bibleget-settings-admin', 
             'bibleget_settings_section'
@@ -160,10 +203,25 @@ class MySettingsPage
 
         add_settings_field(
             'linespacing_verses', 
-            'Line-spacing for Verses Paragraphs (in percentage, between 100 and 200 percent)', 
+            __('Line-spacing for Verses Paragraphs',"bibleget-io"), 
             array( $this, 'linespacing_verses_callback' ), 
             'bibleget-settings-admin', 
             'bibleget_settings_section'
+        );
+        
+        add_settings_section(
+            'bibleget_settings_section2', // ID
+            __('Preferences Settings',"bibleget-io"), // Title
+            array( $this, 'print_section_info2' ), // Callback
+            'bibleget-settings-admin' // Page
+        );
+          
+        add_settings_field(
+            'favorite_version',
+            __('Preferred version or versions (when not indicated in shortcode)',"bibleget-io"),
+            array( $this, 'favorite_version_callback' ),
+            'bibleget-settings-admin',
+            'bibleget_settings_section2'
         );
 
     }
@@ -217,18 +275,46 @@ class MySettingsPage
      */
     public function print_section_info()
     {
-        print 'Customize the appearance and styling of the Bible Quotations:';
+        print __('Customize the appearance and styling of the Bible Quotations:',"bibleget-io");
     }
 
+    public function print_section_info2()
+    {
+        print __('Choose your preferences to facilitate the usage of the shortcode:',"bibleget-io");
+    }
+    
     /** 
      * Get the settings option array and print one of its values
      */
     public function fontfamily_bibleget_callback()
-    {
-        printf(
-            '<input type="text" id="fontfamily_bibleget" name="bibleget_settings[fontfamily_bibleget]" value="%s" />',
-            isset( $this->options['fontfamily_bibleget'] ) && $this->options['fontfamily_bibleget'] ? esc_attr( $this->options['fontfamily_bibleget']) : 'Georgia'
-        );
+    {    	
+    	$fidx = false; 
+    	if(isset( $this->options['fontfamily_bibleget'] ) && $this->options['fontfamily_bibleget']) {
+    		$ffamily = esc_attr($this->options['fontfamily_bibleget']);
+    		$fidx = $this->get_font_index($ffamily);
+    	}
+    	$style = '';
+    	$flbk = '';
+    	
+    	if($fidx!==false){ 
+    		if(isset($this->safe_fonts[$fidx]["fallback"])){
+    			$flbk = '&apos;'.$this->safe_fonts[$fidx]["fallback"].'&apos;,';
+    		}
+    		$style = ' style="font-family:&apos;'.$this->safe_fonts[$fidx]["font-family"].'&apos;,'.$flbk.'&apos;'.$this->safe_fonts[$fidx]["generic-family"].'&apos;;padding:0px;margin:0px;text-align:left;"';
+    	}    	 
+    	
+    	//$style='';
+    	echo '<select id="fontfamily_bibleget" name="bibleget_settings[fontfamily_bibleget]"'.$style.'>';
+    	foreach($this->safe_fonts as $font){
+    		$flbk = '';
+    		if(isset($font["fallback"])){
+    			$flbk = '&apos;'.$font["fallback"].'&apos;,';
+    		}
+    		$style = ' style="font-family:&apos;'.$font["font-family"].'&apos;,'.$flbk.'&apos;'.$font["generic-family"].'&apos;;padding:0px;margin:0px;text-align:left;"';
+    		$selected = isset( $this->options['fontfamily_bibleget'] ) && esc_attr($this->options['fontfamily_bibleget'])==$font["font-family"] ? " SELECTED" : "";
+    		echo '<optgroup'.$style.'><option value="'.$font["font-family"].'" style="padding:0px;margin:0px;text-align:left;"'.$selected.'>'.$font["font-family"].'</option></optgroup>';
+    	}
+    	echo '</select>';
     }
 
     /** 
@@ -236,10 +322,18 @@ class MySettingsPage
      */
     public function fontsize_verses_callback()
     {
-        printf(
-            '<input type="number" min="4" max="75" id="fontsize_verses" name="bibleget_settings[fontsize_verses]" value="%s" />',
-            isset( $this->options['fontsize_verses'] ) && $this->options['fontsize_verses'] ? esc_attr( $this->options['fontsize_verses']) : '10'
-        );
+    	$sizes = array(4,6,8,9,10,11,12,14,16,18,20,24,28);
+    	echo '<select id="fontsize_verses" name="bibleget_settings[fontsize_verses]">';    	
+    	foreach($sizes as $size){
+    		$selected = '';
+    		if(isset( $this->options['fontsize_verses'] ) && $this->options['fontsize_verses']){
+    			if($size == esc_attr( $this->options['fontsize_verses'])){
+    				$selected = " SELECTED";
+    			}
+    		}
+    		echo "<option value=$size".$selected.">$size</option>";    		
+    	}
+    	echo '</select>';
     }
 
     /** 
@@ -247,10 +341,24 @@ class MySettingsPage
      */
     public function fontsize_bookchapter_callback()
     {
-        printf(
+        /*
+    	printf(
             '<input type="number" min="4" max="75" id="fontsize_bookchapter" name="bibleget_settings[fontsize_bookchapter]" value="%s" />',
             isset( $this->options['fontsize_bookchapter'] ) && $this->options['fontsize_bookchapter'] ? esc_attr( $this->options['fontsize_bookchapter']) : '12'
         );
+        */
+    	$sizes = array(4,6,8,9,10,11,12,14,16,18,20,24,28);
+    	echo '<select id="fontsize_bookchapter" name="bibleget_settings[fontsize_bookchapter]">';    	
+    	foreach($sizes as $size){
+    		$selected = '';
+    		if(isset( $this->options['fontsize_bookchapter'] ) && $this->options['fontsize_bookchapter']){
+    			if($size == esc_attr( $this->options['fontsize_bookchapter'])){
+    				$selected = " SELECTED";
+    			}
+    		}
+    		echo "<option value=$size".$selected.">$size</option>";    		
+    	}
+    	echo '</select>';
     }
 
 
@@ -259,10 +367,24 @@ class MySettingsPage
      */
     public function fontsize_versenumbers_callback()
     {
-        printf(
+        /*
+    	printf(
             '<input type="number" min="4" max="75" id="fontsize_versenumbers" name="bibleget_settings[fontsize_versenumbers]" value="%s" />',
             isset( $this->options['fontsize_versenumbers'] ) && $this->options['fontsize_versenumbers'] ? esc_attr( $this->options['fontsize_versenumbers']) : '7'
         );
+        */
+    	$sizes = array(4,6,8,9,10,11,12,14,16,18,20,24,28);
+    	echo '<select id="fontsize_versenumbers" name="bibleget_settings[fontsize_versenumbers]">';    	
+    	foreach($sizes as $size){
+    		$selected = '';
+    		if(isset( $this->options['fontsize_versenumbers'] ) && $this->options['fontsize_versenumbers']){
+    			if($size == esc_attr( $this->options['fontsize_versenumbers'])){
+    				$selected = " SELECTED";
+    			}
+    		}
+    		echo "<option value=$size".$selected.">$size</option>";    		
+    	}
+    	echo '</select>';
     }
 
     /** 
@@ -304,9 +426,41 @@ class MySettingsPage
     public function fontstyle_bookchapter_callback()
     {
         printf(
-            '<input type="text" id="fontstyle_bookchapter" name="bibleget_settings[fontstyle_bookchapter]" value="%s" />',
+            '<input type="hidden" id="fontstyle_bookchapter" name="bibleget_settings[fontstyle_bookchapter]" value="%s" />',
             isset( $this->options['fontstyle_bookchapter'] ) && $this->options['fontstyle_bookchapter'] ? esc_attr( $this->options['fontstyle_bookchapter']) : 'bold'
         );
+        $styles = array();
+        if(isset($this->options['fontstyle_bookchapter'] ) && $this->options['fontstyle_bookchapter']){
+        	$styles = explode(",",esc_attr( $this->options['fontstyle_bookchapter']));
+        }
+        ?>
+	    <div id="bookchapter_styles" class="bibleget-buttonset">
+	      <input type="checkbox" id="bkchbld" <?php if(in_array("bold",$styles)){ echo 'checked="checked"'; } ?>>
+	      <?php 
+	      /* translators: the letter that can represent "Bold" style in a toolbar */ 
+	      ?>
+	      <label for="bkchbld" style="font-weight:bold;"><?php _e("B","bibleget-io") ?></label>
+	 
+	      <input type="checkbox" id="bkchitlc" <?php if(in_array("italic",$styles)){ echo 'checked="checked"'; } ?>>
+	      <?php 
+	      /* translators: the letter that can represent "Italic" style in a toolbar */ 
+	      ?>
+	      <label for="bkchitlc" style="font-weight:bold;font-style:italic;"><?php _e("I","bibleget-io") ?></label>
+	 
+	      <input type="checkbox" id="bkchundr" <?php if(in_array("underline",$styles)){ echo 'checked="checked"'; } ?>>
+	      <?php 
+	      /* translators: the letter that can represent "Underline" style in a toolbar */ 
+	      ?>
+	      <label for="bkchundr" style="text-decoration:underline;"><?php _e("U","bibleget-io") ?></label>
+
+	      <input type="checkbox" id="bkchstrk" <?php if(in_array("strikethrough",$styles)){ echo 'checked="checked"'; } ?>>
+	      <?php 
+	      /* translators: the letter that can represent "Strikethrough" style in a toolbar */ 
+	      ?>
+	      <label for="bkchstrk" style="text-decoration:line-through;"><?php _e("S","bibleget-io") ?></label>
+	    </div>
+        
+        <?php
     }
 
     /** 
@@ -315,9 +469,53 @@ class MySettingsPage
     public function fontstyle_versenumbers_callback()
     {
         printf(
-            '<input type="text" id="fontstyle_versenumbers" name="bibleget_settings[fontstyle_versenumbers]" value="%s" />',
+            '<input type="hidden" id="fontstyle_versenumbers" name="bibleget_settings[fontstyle_versenumbers]" value="%s" />',
             isset( $this->options['fontstyle_versenumbers'] ) && $this->options['fontstyle_versenumbers'] ? esc_attr( $this->options['fontstyle_versenumbers']) : 'superscript'
         );
+        $styles = array();
+        if(isset($this->options['fontstyle_versenumbers'] ) && $this->options['fontstyle_versenumbers']){
+        	$styles = explode(",",esc_attr( $this->options['fontstyle_versenumbers']));
+        }
+        ?>
+	    <div id="versenumber_styles" class="bibleget-buttonset">
+	      <input type="checkbox" id="vsnmbld" <?php if(in_array("bold",$styles)){ echo 'checked="checked"'; } ?>>
+	      <?php 
+	      /* translators: the letter that can represent "Bold" style in a toolbar */ 
+	      ?>
+	      <label for="vsnmbld" style="font-weight:bold;"><?php _e("B","bibleget-io") ?></label>
+	 
+	      <input type="checkbox" id="vsnmitlc" <?php if(in_array("italic",$styles)){ echo 'checked="checked"'; } ?>>
+	      <?php 
+	      /* translators: the letter that can represent "Italic" style in a toolbar */ 
+	      ?>
+	      <label for="vsnmitlc" style="font-weight:bold;font-style:italic;"><?php _e("I","bibleget-io") ?></label>
+	 
+	      <input type="checkbox" id="vsnmundr" <?php if(in_array("underline",$styles)){ echo 'checked="checked"'; } ?>>
+	      <?php 
+	      /* translators: the letter that can represent "Underline" style in a toolbar */ 
+	      ?>
+	      <label for="vsnmundr" style="text-decoration:underline;"><?php _e("U","bibleget-io") ?></label>
+
+	      <input type="checkbox" id="vsnmstrk" <?php if(in_array("strikethrough",$styles)){ echo 'checked="checked"'; } ?>>
+	      <?php 
+	      /* translators: the letter that can represent "Strikethrough" style in a toolbar */ 
+	      ?>
+	      <label for="vsnmstrk" style="text-decoration:line-through;"><?php _e("S","bibleget-io") ?></label>
+
+	      <input type="checkbox" id="vsnmsup" class="supersub" <?php if(in_array("superscript",$styles)){ echo 'checked="checked"'; } ?>>
+	      <?php 
+	      /* translators: letters that can represent "Superscript" style in a toolbar */ 
+	      ?>
+	      <label for="vsnmsup"><span style="font-size:0.7em;vertical-align:baseline;position:relative;top:-0.6em;"><?php _e("SUP","bibleget-io") ?></span></label>
+
+	      <input type="checkbox" id="vsnmsub" class="supersub" <?php if(in_array("subscript",$styles)){ echo 'checked="checked"'; } ?>>
+	      <?php 
+	      /* translators: letters that can represent "Subscript" style in a toolbar */ 
+	      ?>
+	      <label for="vsnmsub"><span style="font-size:0.7em;vertical-align:baseline;position:relative;bottom:-0.6em;"><?php _e("SUB","bibleget-io") ?></span></label>
+	    </div>
+        
+        <?php
     }
 
     /** 
@@ -326,9 +524,41 @@ class MySettingsPage
     public function fontstyle_verses_callback()
     {
         printf(
-            '<input type="text" id="fontstyle_verses" name="bibleget_settings[fontstyle_verses]" value="%s" />',
+            '<input type="hidden" id="fontstyle_verses" name="bibleget_settings[fontstyle_verses]" value="%s" />',
             isset( $this->options['fontstyle_verses'] ) && $this->options['fontstyle_verses'] ? esc_attr( $this->options['fontstyle_verses']) : ''
         );
+        $styles = array();
+        if(isset( $this->options['fontstyle_verses'] ) && $this->options['fontstyle_verses']){
+        	$styles = explode(",",esc_attr( $this->options['fontstyle_verses']));
+        }
+        ?>
+	    <div id="versetext_styles" class="bibleget-buttonset">
+	      <input type="checkbox" id="vstxbld" <?php if(in_array("bold",$styles)){ echo 'checked="checked"'; } ?>>
+	      <?php 
+	      /* translators: the letter that can represent "Bold" style in a toolbar */ 
+	      ?>
+	      <label for="vstxbld" style="font-weight:bold;"><?php _e("B","bibleget-io") ?></label>
+	 
+	      <input type="checkbox" id="vstxitlc" <?php if(in_array("italic",$styles)){ echo 'checked="checked"'; } ?>>
+	      <?php 
+	      /* translators: the letter that can represent "Italic" style in a toolbar */ 
+	      ?>
+	      <label for="vstxitlc" style="font-weight:bold;font-style:italic;"><?php _e("I","bibleget-io") ?></label>
+	 
+	      <input type="checkbox" id="vstxundr" <?php if(in_array("underline",$styles)){ echo 'checked="checked"'; } ?>>
+	      <?php 
+	      /* translators: the letter that can represent "Underline" style in a toolbar */ 
+	      ?>
+	      <label for="vstxundr" style="text-decoration:underline;"><?php _e("U","bibleget-io") ?></label>
+
+	      <input type="checkbox" id="vstxstrk" <?php if(in_array("strikethrough",$styles)){ echo 'checked="checked"'; } ?>>
+	      <?php 
+	      /* translators: the letter that can represent "Strikethrough" style in a toolbar */ 
+	      ?>
+	      <label for="vstxstrk" style="text-decoration:line-through;"><?php _e("S","bibleget-io") ?></label>
+	    </div>
+        
+        <?php
     }
 
     /** 
@@ -336,23 +566,99 @@ class MySettingsPage
      */
     public function linespacing_verses_callback()
     {
-        printf(
+        /*
+    	printf(
             '<input type="number" min="100" max="200" id="linespacing_verses" name="bibleget_settings[linespacing_verses]" value="%s" />',
             isset( $this->options['linespacing_verses'] ) && $this->options['linespacing_verses'] ? esc_attr( $this->options['linespacing_verses']) : '150'
         );
+        */
+    	$vals = [100,150,200];
+    	/* translators: "single" refers to line-spacing: "single line-spacing" */
+    	$single = __("single","bibleget-io");
+    	/* translators: "double" refers to line-spacing: "double line-spacing" */
+    	$double = __("double","bibleget-io");   
+    	$lbls = [$single,"1½",$double];
+    	echo '<select id="linespacing_verses" name="bibleget_settings[linespacing_verses]">';
+    	foreach($vals as $idx => $val){
+			$selected = '';
+			if(isset( $this->options['linespacing_verses'] ) && $this->options['linespacing_verses']){
+				if($val == esc_attr( $this->options['linespacing_verses'])){
+					$selected = " SELECTED";
+				}
+			}
+			echo '<option value="'.$val.'"'.$selected.'>'.$lbls[$idx].'</option>';
+    	}	
+    	echo '</select>';
+    	
     }
 
+    public function favorite_version_callback()
+    {
+    	$versions = get_option("bibleget_versions",array()); //theoretically should be an array
+    	if(count($versions)<1){
+    		SetOptions(); //global function defined in bibleget-io.php
+    		$versions = get_option("bibleget_versions",array());
+    	}
+		$selected = array();
+		if(isset( $this->options['favorite_version'] ) && $this->options['favorite_version']){
+			$selected == esc_attr( $this->options['favorite_version']);
+		}
+    	echo '<select id="favorite_version" name="bibleget_settings[favorite_version]" multiple>';
+    	foreach($versions as $version){
+    		$selectedstr = '';
+    		if(in_array($version,$selected)){ $selectedstr = " SELECTED"; }
+			echo '<option value="'.$version.'"'.$selectedstr.'>'.$version.'</option>';
+    	}
+    	echo '</select>';
+    }
+    
     public function admin_print_styles()
     {
         wp_enqueue_style( 'admin-css', plugins_url('css/admin.css', __FILE__) );
     }
 
+    public function admin_print_scripts()
+    {
+    	$handle = 'jquery-ui-core';
+    	$list = 'registered';
+    	if (!wp_script_is( $handle, $list )) {
+			wp_register_script( $handle, '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js');
+    		wp_enqueue_script( $handle );
+    	}
+
+    	wp_enqueue_style('jquery-ui-smoothness', '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/sunny/jquery-ui.css', false, null);
+    	
+    	wp_register_script( 'admin-js', plugins_url('js/admin.js', __FILE__), array($handle) );
+    	$thisoptions = get_option( 'bibleget_settings' );
+    	$myoptions = array();
+    	foreach($thisoptions as $key => $option){
+    		$myoptions[$key] = esc_attr($option);
+    	}
+    	$safefonts = array(
+    			array("font-family" => "Arial", "fallback" => "Helvetica", "generic-family" => "sans-serif"),
+    			array("font-family" => "Arial Black", "fallback" => "Gadget", "generic-family" => "sans-serif"),
+    			array("font-family" => "Book Antiqua", "fallback" => "Palatino", "generic-family" => "serif"),
+    			array("font-family" => "Courier New", "fallback" => "Courier", "generic-family" => "monospace"),
+    			array("font-family" => "Georgia", "generic-family" => "serif"),
+    			array("font-family" => "Impact", "fallback" => "Charcoal", "generic-family" => "sans-serif"),
+    			array("font-family" => "Lucida Console", "fallback" => "Monaco", "generic-family" => "monospace"),
+    			array("font-family" => "Lucida Sans Unicode", "fallback" => "Lucida Grande", "generic-family" => "sans-serif"),
+    			array("font-family" => "Palatino Linotype", "fallback" => "Palatino", "generic-family" => "serif"),
+    			array("font-family" => "Tahoma", "fallback" => "Geneva", "generic-family" => "sans-serif"),
+    			array("font-family" => "Times New Roman", "fallback" => "Times", "generic-family" => "serif"),
+    			array("font-family" => "Trebuchet MS", "fallback" => "Helvetica", "generic-family" => "sans-serif"),
+    			array("font-family" => "Verdana", "fallback" => "Geneva", "generic-family" => "sans-serif")
+    	);
+    	$obj = array("options" => $myoptions,"safe_fonts" => $safefonts);
+    	wp_localize_script( 'admin-js', 'obj', $obj );
+    	wp_enqueue_script( 'admin-js' );
+    }
+    
     public function do_on_my_plugin_settings_save()
     {
       //print("\n Page with hook ".$this->options_page_hook." was loaded and load hook was called.");
       //exit;
-      if(isset($_GET['settings-updated']) && $_GET['settings-updated'])
-       {
+      if(isset($_GET['settings-updated']) && $_GET['settings-updated']){
           //plugin settings have been saved. Here goes your code
           $this->options = get_option( 'bibleget_settings' );
           
@@ -362,10 +668,10 @@ class MySettingsPage
           if(isset($this->options['fontstyle_bookchapter']) && $this->options['fontstyle_bookchapter'] ){
             $bookchapter_style = explode(",",$this->options['fontstyle_bookchapter']);
             foreach($bookchapter_style as $value){
-              if($value == "bold"){
+              if($value === "bold"){
                 $bookchapter_bold = true;
               }
-              if($value == "italic"){
+              if($value === "italic"){
                 $bookchapter_italic = true;
               }
             }
@@ -378,13 +684,13 @@ class MySettingsPage
           if(isset($this->options['fontstyle_versenumbers']) && $this->options['fontstyle_versenumbers'] ){
             $versenumbers_style = explode(",",$this->options['fontstyle_versenumbers']);
             foreach($versenumbers_style as $value){
-              if($value == "bold"){
+              if($value === "bold"){
                 $versenumbers_bold = true;
               }
-              if($value == "italic"){
+              if($value === "italic"){
                 $versenumbers_italic = true;
               }
-              if($value == "superscript"){
+              if($value === "superscript"){
                 $versenumbers_superscript = true;
               }
             }
@@ -396,14 +702,16 @@ class MySettingsPage
           if(isset($this->options['fontstyle_verses']) && $this->options['fontstyle_verses'] ){
             $verses_style = explode(",",$this->options['fontstyle_verses']);
             foreach($verses_style as $value){
-              if($value == "bold"){
+              if($value === "bold"){
                 $verses_bold = true;
               }
-              if($value == "italic"){
+              if($value === "italic"){
                 $verses_italic = true;
               }
             }
           }
+          
+          $ff = $this->get_font_index($this->options['fontfamily_bibleget']);
           
           $cssdata = ""
             ."div.results { \n"
@@ -412,7 +720,7 @@ class MySettingsPage
             ."  padding: 12px; \n"
             ."  margin:12px auto; \n"
             ."  width: 80%; \n"
-            ."  font-family: " .(isset($this->options['fontfamily_bibleget']) && $this->options['fontfamily_bibleget'] ? $this->options['fontfamily_bibleget'] : "'Palatino Linotype'"). "; \n"
+            ."  font-family: " .((isset($this->options['fontfamily_bibleget']) && $ff !== false) ? "'".$this->safe_fonts[$ff]["font-family"]."',".(isset($this->safe_fonts[$ff]["fallback"]) ? "'".$this->safe_fonts[$ff]["fallback"]."',":"")."'".$this->safe_fonts[$ff]["generic_family"]."'" : "'Palatino Linotype'"). "; \n"
             ."  font-size: .8em; \n"
             ."} \n"
             ."\n"
@@ -454,23 +762,22 @@ class MySettingsPage
             ."}";
           $file = plugin_dir_path( __FILE__ ) . 'css/styles.css';
           if(file_exists($file)){
-            //print("\n File Exists! Now writing to file ".$file."\n");
             if(file_put_contents ($file,$cssdata)){
               //print("\n Successfully wrote to file ".$file."! These are the contents we wrote: &lt;&lt;&lt;".$cssdata."&gt;&gt;&gt; \n");
               //print("Value of this->options['fontfamily_bibleget'] is ".$this->options['fontfamily_bibleget']);
             }
             else{
-              //print("\n Error writing to file ".$file."... \n");
+				$notices = get_option('bibleget_error_admin_notices', array());
+				$notices[] = __("There was an error saving the settings data. You may have to try again.","bibleget-io");
+				update_option('bibleget_error_admin_notices',$notices);
             }
           }
           else{
-            //print("\n Could not access file ".$file."... \n");
+            $cssfile = fopen($file, "w") or die("Unable to open file!");
+            fwrite($cssfile,$cssdata);
+            fclose($cssfile);
           }
        }
     }
 
-}
-
-if( is_admin() ){
-    $my_settings_page = new MySettingsPage();
 }

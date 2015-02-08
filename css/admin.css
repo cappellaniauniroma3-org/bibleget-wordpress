@@ -6,3 +6,52 @@ h2#bibleget-h2:before {
     vertical-align: middle;
     margin-right: 0.3em;
 }
+
+#page-wrap > div {
+	float: left;
+	width: 45%;
+}
+
+#preview {
+	border: 1px solid Blue;
+	border-radius: 6px;
+	padding: 12px;
+	background-color: White;
+	box-shadow: 3px 3px 6px #222222;
+	text-align: justify;
+	position:fixed;
+	width: 35%;
+	top: 100px;	
+}
+
+#page-clear {
+	clear: both;
+}
+
+#preview legend{
+	font-weight: 600;
+	font-size: 14px;
+	color: #222;
+	line-height: 1.3;
+	padding: 5px 20px;
+	border: 2px inset #000066;
+	border-radius: 3px;
+	background-color: #EEEEEE;
+	box-shadow: inset 0px 0px 3px #666666;
+}
+
+form input[type=color]{
+	height: 2em;
+}
+
+span.sup,span.sub { 
+  font-size: 0.7em; 
+  vertical-align: baseline; 
+  position: relative; 
+} 
+span.sup{
+	top:-0.6em;
+}
+span.sub{
+	bottom:-0.6em;
+}
