@@ -988,6 +988,11 @@ $worldlanguages = array(
         )      
 );
 
+function Sortify($string)
+{
+	return preg_replace('~&([a-z]{1,2})(acute|cedil|circ|grave|lig|orn|ring|slash|tilde|uml);~i', '$1' . chr(255) . '$2', htmlentities($string, ENT_QUOTES, 'UTF-8'));
+}
+
 require_once(plugin_dir_path( __FILE__ ) . "options.php");
 
 if( is_admin() ){

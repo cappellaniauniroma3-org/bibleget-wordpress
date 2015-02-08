@@ -266,6 +266,9 @@ class MySettingsPage
 
         if( isset( $input['fontsize_verses'] ) )
             $new_input['fontsize_verses'] = absint( $input['fontsize_verses'] );
+        
+        if( isset( $input['favorite_version'] ) )
+        	$new_input['favorite_version'] = sanitize_text_field($input['favorite_version']);
 
         return $new_input;
     }
@@ -595,21 +598,69 @@ class MySettingsPage
     public function favorite_version_callback()
     {
     	$versions = get_option("bibleget_versions",array()); //theoretically should be an array
+    	$versionsbylang = array();
+    	$langs = array();    	 
     	if(count($versions)<1){
     		SetOptions(); //global function defined in bibleget-io.php
     		$versions = get_option("bibleget_versions",array());
-    	}
+    	}    	
+    	global $langcodes;
+    	global $worldlanguages;
+    	$locale = substr(get_locale(),0,2);
+    	foreach($versions as $abbr => $versioninfo){
+    		 $info = explode("|",$versioninfo);
+    		 $fullname = $info[0];
+    		 $year = $info[1];
+    		 $lang = $langcodes[$info[2]];
+    		 if(isset($worldlanguages[$lang][$locale])){
+				$lang = $worldlanguages[$lang][$locale];
+    		 }
+    		 if(isset($versionsbylang[$lang])){
+    		 	if(isset($versionsbylang[$lang][$abbr])){
+    		 		//how can that be?
+    		 	}
+    		 	else{
+    		 		$versionsbylang[$lang][$abbr] = array("fullname"=>$fullname,"year"=>$year);
+    		 	}
+    		 }
+    		 else{
+				$versionsbylang[$lang] = array();
+				array_push($langs,$lang);
+				$versionsbylang[$lang][$abbr] = array("fullname"=>$fullname,"year"=>$year);
+    		 }
+		}
+    	$counter = 0;
+		//ksort($versionsbylang);
+		$counter = count($versionsbylang);
+		foreach($versionsbylang as $lang => $versionbylang){
+			ksort($versionsbylang[$lang]);
+			$counter+=count($versionsbylang[$lang]);
+		}
+		
+		if(extension_loaded('intl') === true){
+			collator_asort(collator_create('root'), $langs);
+		}else{
+			array_multisort(array_map('Sortify', $langs), $langs);
+		}		
+				
 		$selected = array();
 		if(isset( $this->options['favorite_version'] ) && $this->options['favorite_version']){
-			$selected == esc_attr( $this->options['favorite_version']);
+			$selected = explode(",",$this->options['favorite_version']);
 		}
-    	echo '<select id="favorite_version" name="bibleget_settings[favorite_version]" multiple>';
-    	foreach($versions as $version){
-    		$selectedstr = '';
-    		if(in_array($version,$selected)){ $selectedstr = " SELECTED"; }
-			echo '<option value="'.$version.'"'.$selectedstr.'>'.$version.'</option>';
+    	$size = $counter<10 ? $counter : 10;
+		echo '<select id="versionselect" size='.$size.' multiple>';
+    	
+    	foreach($langs as $lang){
+    		echo '<optgroup label="-'.$lang.'-">';
+			foreach($versionsbylang[$lang] as $abbr => $value){
+				$selectedstr = '';
+				if(in_array($abbr,$selected)){ $selectedstr = " SELECTED"; }
+				echo '<option value="'.$abbr.'"'.$selectedstr.'>'.$abbr.' — '.$value["fullname"].' ('.$value["year"].')</option>';
+    		}
+			echo '</optgroup>';
     	}
     	echo '</select>';
+    	echo '<input type="hidden" id="favorite_version" name="bibleget_settings[favorite_version]" value="" />';
     }
     
     public function admin_print_styles()

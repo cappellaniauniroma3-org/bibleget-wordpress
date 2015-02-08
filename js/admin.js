@@ -70,6 +70,13 @@ jQuery(document).ready(function(){
 	fval = jQuery("#linespacing_verses").val();
 	jQuery("#preview p.verses").css({"line-height":fval+"%"});
 	
+	fval = jQuery("#versionselect").val();
+	if(fval!==null && fval.length>0){
+		jQuery("#favorite_version").val(fval.join(","));
+	}
+	
+	
+	
 	jQuery("#fontfamily_bibleget").change(function(){
 		fval = jQuery(this).val();
 		findex = false;
@@ -289,6 +296,17 @@ jQuery(document).ready(function(){
 	jQuery("#linespacing_verses").change(function(){
 		var fval = jQuery(this).val();
 		jQuery("#preview p.verses").css({"line-height":fval+"%"});
+	});
+	
+	jQuery("#versionselect").change(function(){
+		var fval = jQuery(this).val();
+		console.log(fval);
+		if(fval!==null && fval.length>0){
+			jQuery("#favorite_version").val(fval.join(","));
+		}
+		else{
+			jQuery("#favorite_version").val('');
+		}
 	});
 	
 });
