@@ -114,6 +114,8 @@ function bibleget_shortcode($atts, $content = null) {
     'version' => "",
   	'versions' => ""), $atts);
 	
+   	//echo "<div style=\"border:10px solid Blue;\">".$a["query"]."</div>";
+  
   	// Determine bible version(s)
   	if($a["versions"] !== ""){
   		$a["version"] = $a["versions"];
@@ -121,51 +123,82 @@ function bibleget_shortcode($atts, $content = null) {
   	else if($a["version"] === ""){ $a["version"] = "NVBSE"; }
   	$versions = explode(",",$a["version"]);
   	if(count($versions)<1){
-    	$output = '<span style="color:Red;font-weight:bold;">'.__("Devi indicare la versione desiderata con il parametro \"version\" (o le versioni desiderate separate con virgola con il parametro \"versions\")","bibleget-io").'</span>';
+  		$options = get_option( 'bibleget_settings', array() );
+  		$versions = isset($options["favorite_version"]) ? explode(",",$options["favorite_version"]) : array();
+  	} 	
+  	if(count($versions)<1){
+    	$output = '<span style="color:Red;font-weight:bold;">'.__("You must indicate the desired version with the parameter \"version\" (or the desired versions as a comma separated list with the parameter \"versions\")","bibleget-io").'</span>';
        	return '<div class="bibleget-quote-div">' . $output . '</div>';
    	}
 
-   	$queries = queryClean($a["query"]);
-	if(is_array($queries)){
-		$goodqueries = processQueries($queries,$versions);
-		$finalquery = implode(";",$goodqueries);
-		if($finalquery != ""){
-			//WIP continue HERE
-		}	
+   	$vversions = get_option("bibleget_versions",array());
+   	if(count($vversions)<1){
+   		SetOptions();
+   		$vversions = get_option("bibleget_versions",array());
+   	}
+   	$validversions = array_keys($vversions);
+   	//echo "<div style=\"border:10px solid Blue;\">".print_r($validversions)."</div>";
+   	
+   	foreach($versions as $version){
+   		if(!in_array($version,$validversions)){
+			$optionsurl = admin_url("options-general.php?page=bibleget-settings-admin");
+   			$output = '<span style="color:Red;font-weight:bold;">'.printf(__("The requested version '%s' is not valid, please check the list of valid versions in the <a href=\"%s\">settings page</a>","bibleget-io"),$version,$optionsurl).'</span>';
+   			return '<div class="bibleget-quote-div">' . $output . '</div>';
+   		}
+   	}
+     
+    $queries = queryClean($a["query"]);
+	if (is_array ( $queries )) {
+		$goodqueries = processQueries ( $queries, $versions );
+		// write_log("value of goodqueries after processQueries:");
+		// write_log($goodqueries);
+		if ($goodqueries === false) {
+			$output = "goodqueries returned false";
+			return '<div class="bibleget-quote-div">' . $output . '</div>';
+		}
+		$finalquery = "query=";
+		$finalquery .= implode ( ";", $goodqueries );
+		$finalquery .= "&version=";
+		$finalquery .= implode ( ",", $versions );
+		// write_log("value of finalquery = ".$finalquery);
+		if ($finalquery != "") {
+			// $output = $finalquery;
+			// return '<div class="bibleget-quote-div">' . $output . '</div>';
+			$output = queryServer ( $finalquery );
+			return '<div class="bibleget-quote-div">' . $output . '</div>';
+		}
+	} else {
+		$output = '<span style="color:Red;font-weight:bold;">' . __ ( "There are errors in the shortcode", "bibleget-io" ) . ' &apos;[bibleget]&apos;:</span><br />' . $queries;
+		return '<div class="bibleget-quote-div">' . $output . '</div>';
 	}
-    else{
-    	$output = '<span style="color:Red;font-weight:bold;">'.__("Ci sono errori nello shortcode","bibleget-io").' &apos;[bibleget]&apos;:</span><br />' . $queries;
-       	return '<div class="bibleget-quote-div">' . $output . '</div>';
-    }
-
     
-    //TO BE UPDATED FROM HERE ON
-    
-    if(is_array($queryCheck) && count($queryCheck)==1 && $queryCheck[0]=="goodtogo"){
-    	$ch = curl_init("www.bibleget.io/query/index2?query=".$a["query"]."&version=".$a["version"]."&return=html");
-    	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-    	
-    	if( ini_get('safe_mode') || ini_get('open_basedir') ){
-    		// safe mode is on, we can't use some settings
-    	}else{
-    		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-    		curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
-    	}
-    	
-    	$output = curl_exec($ch);
-    	// remove style and title tags from the output
-    	$output = substr($output,0,strpos($output, "<style")) . substr($output,strpos($output, "</style"),strlen($output));
-    	$output = substr($output,0,strpos($output, "<title")) . substr($output,strpos($output, "</title"),strlen($output));
-    	
-    	curl_close($ch);    	 
-    }
-    else{
-    	$output = '<span style="color:Red;font-weight:bold;">'.__("Ci sono errori nello shortcode","bibleget-io").' &apos;[bibleget]&apos;:</span><br />' . implode('<br />',$queryCheck);
-    }
-    
-    return '<div class="bibleget-quote-div">' . $output . '</div>';
 }
 add_shortcode('bibleget', 'bibleget_shortcode');
+
+function queryServer($finalquery){
+	
+	$ch = curl_init("query.bibleget.io/index2.php?".$finalquery."&return=html&appid=wordpress");
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+    	
+   	if( ini_get('safe_mode') || ini_get('open_basedir') ){
+   		// safe mode is on, we can't use some settings
+   	}else{
+   		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+   		curl_setopt($ch, CURLOPT_AUTOREFERER, TRUE);
+   	}
+   	$output = curl_exec($ch);
+   	if($output && !curl_errno($ch)){
+   		// remove style and title tags from the output
+   		$output = substr($output,0,strpos($output, "<style")) . substr($output,strpos($output, "</style"),strlen($output));
+   		$output = substr($output,0,strpos($output, "<title")) . substr($output,strpos($output, "</title"),strlen($output));
+   	}
+   	else{
+   		$output = '<span style="color:Red;font-weight:bold;">'.__("There was an error communicating with the server, please wait and try again: ","bibleget-io").' &apos;'.curl_error($ch).'&apos;: '.$finalquery.'</span>';
+   	}
+   	curl_close($ch);    	 
+   
+	return $output;
+}
 
 function processQueries($queries,$versions){
 	$goodqueries = array();
@@ -176,12 +209,43 @@ function processQueries($queries,$versions){
 	}
 	$indexes = array();
 	foreach($versions as $key => $value){
-		$temp = get_option("bibleget_".$value."IDX");
-		$temp1 = json_encode($temp);
-		$indexes[$value] = json_decode($temp,true);
+		if($temp = get_option("bibleget_".$value."IDX")){
+  		//write_log("retrieving option ["."bibleget_".$value."IDX"."] from wordpress options...");
+      //write_log($temp);
+      if(is_object($temp)){
+        //write_log("temp variable is an object, now converting to an array with key '".$value."'...");
+        $indexes[$value] = json_decode(json_encode($temp),true);
+        //write_log($indexes[$value]);
+      }
+      elseif(is_array($temp)){
+        //write_log("temp variable is an array, hurray!");
+        $indexes[$value] = $temp;
+        //write_log($indexes[$value]);
+      }
+      else{
+        //write_log("temp variable is neither an object or an array. What the heck is it?");
+        //write_log($temp);
+      }
+    }
+    else{
+      //write_log("option ["."bibleget_".$value."IDX"."] does not exist. Now attempting to set options...");
+      SetOptions();
+      if($temp = get_option("bibleget_".$value."IDX")){
+    		//write_log("retrieving option ["."bibleget_".$value."IDX"."] from wordpress options...");
+        	//write_log($temp);
+        	//$temp1 = json_encode($temp);
+    		$indexes[$value] = json_decode($temp,true);    
+      }
+      else{
+        //write_log("Could not either set or get option ["."bibleget_".$value."IDX"."]");
+      }
+    }
 	}
-	
+	//write_log("indexes array should now be populated:");
+  	//write_log($indexes);
+  
 	$notices= get_option('bibleget_error_admin_notices', array());
+	
 	foreach($queries as $key => $value){
 		$thisquery = toProperCase($value); //shouldn't be necessary because already array_mapped, but better safe than sorry
 		if($key===0){
@@ -191,8 +255,12 @@ function processQueries($queries,$versions){
 			}
 		}
 		$thisbook = checkQuery($thisquery,$indexes,$thisbook);
+		//write_log("value of thisbook after checkQuery = ".$thisbook);
 		if($thisbook !== false){
 			array_push($goodqueries,$thisquery);
+		}
+		else{
+			return $thisbook;
 		}
 	}
 	update_option('bibleget_error_admin_notices',$notices);
@@ -201,7 +269,7 @@ function processQueries($queries,$versions){
 }
 
 function checkQuery($thisquery,$indexes,$thisbook=""){
-	
+	//write_log("value of thisquery = ".$thisquery);
 	$errorMessages = array();
 	$errorMessages[0] = __("There cannot be more commas than there are dots.","bibleget-io");
 	$errorMessages[1] = __("You must have a valid chapter following the book abbreviation!","bibleget-io");
@@ -279,23 +347,31 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 							$matches[1] = array($matches[1]);
 						}
 						$myidx = $validBookIndex+1;
-						foreach($matches[1] as $match){
-							foreach($indexes as $jkey => $jindex){
-								$bookidx = array_search($myidx,$jindex["book_num"]);
-								$chapter_limit = $jindex["chapter_limit"][$bookidx];
-								if($match>$chapter_limit){
-									/* translators: the expressions <%1$d>, <%2$s>, <%3$s>, and <%4$d> must be left as is, they will be substituted dynamically by values in the script. See http://php.net/sprintf. */
-									$msg = __('A chapter in the query is out of bounds: there is no chapter <%1$d> in <%2$s> in the requested version <%3$s>, the last possible chapter is {%4$d}',"bibleget-io");
-									$errs[] = sprintf($msg,$match,$thisbook,$jkey,$chapter_limit);
-									update_option('bibleget_error_admin_notices',$errs);	
-									return false;
-								}
-							}
-						}
+						//write_log("myidx = ".$myidx);
+            foreach($matches[1] as $match){
+				foreach($indexes as $jkey => $jindex){
+				//trigger_error(print_r($jindex, true));
+                //write_log("jindex array contains:");
+                //write_log($jindex);
+				$bookidx = array_search($myidx,$jindex["book_num"]);
+				//write_log("bookidx for ".$jkey." = ".$bookidx);
+                $chapter_limit = $jindex["chapter_limit"][$bookidx];
+				//write_log("chapter_limit for ".$jkey." = ".$chapter_limit);
+                write_log("match for ".$jkey." = ".$match);
+                if($match>$chapter_limit){
+					/* translators: the expressions <%1$d>, <%2$s>, <%3$s>, and <%4$d> must be left as is, they will be substituted dynamically by values in the script. See http://php.net/sprintf. */
+					$msg = __('A chapter in the query is out of bounds: there is no chapter <%1$d> in <%2$s> in the requested version <%3$s>, the last possible chapter is {%4$d}',"bibleget-io");
+					$errs[] = sprintf($msg,$match,$thisbook,$jkey,$chapter_limit);
+					update_option('bibleget_error_admin_notices',$errs);	
+					return false;
+				}
+			}
+		}
 						
-						$commacount = substr_count($thisquery,",");
-						if($commacount>1){
-							if(!str_pos($thisquery,'-')){
+		$commacount = substr_count($thisquery,",");
+		//write_log("commacount = ".$commacount);
+        if($commacount>1){
+							if(!strpos($thisquery,'-')){
 								$errs[] = __("You cannot have more than one colon and not have a dash!","bibleget-io")." <".$thisquery.">";
 								update_option('bibleget_error_admin_notices',$errs);	
 								return false;
@@ -323,18 +399,24 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 							}
 						}
 						elseif($commacount==1){
-							$parts = explode(",",$thisquery);
-							if(str_pos($parts[1],'-')){
-								if(preg_match_all("/[,\.][1-9][0-9]{0,2}\-([1-9][0-9]{0,2})/",$thisquery,$matches)){
+							//write_log("commacount has been detected as 1, now exploding on comma the query [".$thisquery."]");
+              $parts = explode(",",$thisquery);
+							//write_log($parts);
+              write_log("checking for presence of dashes in the right-side of the comma...");
+              if(strpos($parts[1],'-')){
+								//write_log("a dash has been detected in the right-side of the comma (".$parts[1].")");
+                if(preg_match_all("/[,\.][1-9][0-9]{0,2}\-([1-9][0-9]{0,2})/",$thisquery,$matches)){
 									if(!is_array($matches[1])){
 										$matches[1] = array($matches[1]);
 									}
 									$highverse = intval(array_pop($matches[1]));
-									foreach($indexes as $jkey => $jindex){
+									//write_log("highverse = ".$highverse);
+                  foreach($indexes as $jkey => $jindex){
 										$bookidx = array_search($myidx,$jindex["book_num"]);
 										$chapters_verselimit = $jindex["verse_limit"][$bookidx];
 										$verselimit = intval($chapters_verselimit[intval($parts[0])-1]);
-										if($highverse>$verselimit){
+										//write_log("verselimit for ".$jkey." = ".$verselimit);
+                    if($highverse>$verselimit){
 											/* translators: the expressions <%1$d>, <%2$s>, <%3$d>, <%4$s> and %5$d must be left as is, they will be substituted dynamically by values in the script. See http://php.net/sprintf. */
 											$msg = __('A verse in the query is out of bounds: there is no verse <%1$d> in <%2$s> chapter <%3$d> in the requested version <%4$s>, the last possible verse is %5$d',"bibleget-io");
 											$errs[] = sprintf($msg,$highverse,$thisbook,$parts[0],$jkey,$verselimit);
@@ -343,6 +425,9 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 										}
 									}
 								}
+                else{
+                  //write_log("something is up with the regex check...");
+                }
 							}
 							else{
 								if(preg_match("/,([1-9][0-9]{0,2})/",$thisquery,$matches)){
@@ -597,14 +682,14 @@ function getMetaData($request){
 function queryClean($query){
 	// enforce query rules
 	if($query===''){
-		return __("I cannot send an empty query.");
+		return __("I cannot send an empty query.","bibleget-io");
 	}
 	$query = trim($query);
 	$query = preg_replace('/\s+/', '', $query);
-	$query = str_replace(' ','',$a["query"]);
+	$query = str_replace(' ','',$query);
 
 	if(strpos($query,':') && strpos($query,'.')){
-		return __("Mixed notations have been detected. Please use either english notation or european notation.").'<'+$query+'>';
+		return __("Mixed notations have been detected. Please use either english notation or european notation.","bibleget-io").'<'+$query+'>';
 	}
 	else if(strpos($query,':')){ //if english notation is detected, translate it to european notation
 		if(strpos($query,',') != -1){
@@ -646,7 +731,9 @@ function DeleteOptions(){
 function SetOptions(){
 	$metadata = getMetaData("biblebooks");
 	if($metadata !== false){
-		if(property_exists($metadata,"results")){
+		//write_log("Retrieved biblebooks metadata...");
+    	//write_log($metadata);
+    	if(property_exists($metadata,"results")){
 			$biblebooks = $metadata->results;
 			foreach($biblebooks as $key => $value){
 				$biblebooks_str = json_encode($value);
@@ -664,26 +751,34 @@ function SetOptions(){
 	$metadata = getMetaData("bibleversions");
 	$versionsabbrev = array();
 	if($metadata !== false){
-		if(property_exists($metadata,"validversions_fullname")){
+		//write_log("Retrieved bibleversions metadata");
+    	//write_log($metadata);
+    	if(property_exists($metadata,"validversions_fullname")){
 			$bibleversions = $metadata->validversions_fullname;
-			$versionsabbrev = get_object_vars($bibleversions);
+      		$versionsabbrev = array_keys(get_object_vars($bibleversions));
 			$bibleversions_str = json_encode($bibleversions);
 			$bbversions = json_decode($bibleversions_str,true);
 			update_option("bibleget_versions",$bbversions);				
 		}
+    //write_log("versionsabbrev should now be populated:");
+    //write_log($versionsabbrev);
 	}
 	
 	if(count($versionsabbrev)>0){
 		$versionsstr = implode(',',$versionsabbrev);
 		$metadata = getMetaData("versionindex&versions=".$versionsstr);
 		if($metadata !== false){
+			//write_log("Retrieved versionindex metadata");
+      		//write_log($metadata);
 			if(property_exists($metadata,"indexes")){
 				foreach($metadata->indexes as $versabbr => $value){
-					$temp = new stdClass();
-					$temp->book_num = $metadata["indexes"][$versabbr]["book_num"];
-					$temp->chapter_limit = $metadata["indexes"][$versabbr]["chapter_limit"];
-					$temp->verse_limit = $metadata["indexes"][$versabbr]["verse_limit"];
+					$temp = array();
+					$temp["book_num"] = $value->book_num;
+					$temp["chapter_limit"] = $value->chapter_limit;
+					$temp["verse_limit"] = $value->verse_limit;
 					//$versionindex_str = json_encode($temp);
+          			//write_log("creating new option: ["."bibleget_".$versabbr."IDX"."] with value:");
+          			//write_log($temp);
 					update_option("bibleget_".$versabbr."IDX",$temp);
 				}
 			}
@@ -997,4 +1092,20 @@ require_once(plugin_dir_path( __FILE__ ) . "options.php");
 
 if( is_admin() ){
 	$my_settings_page = new MySettingsPage();
+}
+
+function write_log ( $log )  {
+  $debugfile = get_stylesheet_directory()."/debug.txt";
+  $datetime = strftime("%Y%m%d %H:%M:%S",time());
+  if($myfile = fopen($debugfile, "a")){
+    if ( is_array( $log ) || is_object( $log ) ) {
+        fwrite($myfile, "[" . $datetime . "] " . print_r( $log, true) ."\n");
+    } else {
+        fwrite($myfile, "[" . $datetime . "] " . $log . "\n");
+    }
+    fclose($myfile);
+  }
+  else{
+    echo '<div style="border: 1px solid Red;background-color:LightRed;">impossible to open or write to: '.$debugfile.'</div>';
+  }
 }

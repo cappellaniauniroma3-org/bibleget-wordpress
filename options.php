@@ -663,14 +663,20 @@ class MySettingsPage
     	echo '<input type="hidden" id="favorite_version" name="bibleget_settings[favorite_version]" value="" />';
     }
     
-    public function admin_print_styles()
+    public function admin_print_styles($hook)
     {
-        wp_enqueue_style( 'admin-css', plugins_url('css/admin.css', __FILE__) );
+        if($hook == 'settings_page_bibleget-settings-admin'){
+    		wp_enqueue_style( 'admin-css', plugins_url('css/admin.css', __FILE__) );
+    	}
     }
 
-    public function admin_print_scripts()
+    public function admin_print_scripts($hook)
     {
-    	$handle = 'jquery-ui-core';
+        //echo "<div style=\"border:10px ridge Blue;\">$hook</div>";
+    	if($hook != 'settings_page_bibleget-settings-admin'){
+    		return;
+		}
+		$handle = 'jquery-ui-core';
     	$list = 'registered';
     	if (!wp_script_is( $handle, $list )) {
 			wp_register_script( $handle, '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js');
@@ -715,6 +721,8 @@ class MySettingsPage
           
           $bookchapter_bold = false;
           $bookchapter_italic = false;
+          $bookchapter_underline = false;
+          $bookchapter_strikethrough = false;
           
           if(isset($this->options['fontstyle_bookchapter']) && $this->options['fontstyle_bookchapter'] ){
             $bookchapter_style = explode(",",$this->options['fontstyle_bookchapter']);
@@ -725,12 +733,21 @@ class MySettingsPage
               if($value === "italic"){
                 $bookchapter_italic = true;
               }
+              if($value === "underline"){
+                $bookchapter_underline = true;
+              }
+              if($value === "strikethrough"){
+                $bookchapter_strikethrough = true;
+              }
             }
           }
           
           $versenumbers_bold = false;
           $versenumbers_italic = false;
+          $versenumbers_underline = false;
+          $versenumbers_strikethrough = false;
           $versenumbers_superscript = false;
+          $versenumbers_subscript = false;
           
           if(isset($this->options['fontstyle_versenumbers']) && $this->options['fontstyle_versenumbers'] ){
             $versenumbers_style = explode(",",$this->options['fontstyle_versenumbers']);
@@ -741,14 +758,25 @@ class MySettingsPage
               if($value === "italic"){
                 $versenumbers_italic = true;
               }
+              if($value === "underline"){
+                $versenumbers_underline = true;
+              }
+              if($value === "strikethrough"){
+                $versenumbers_strikethrough = true;
+              }
               if($value === "superscript"){
                 $versenumbers_superscript = true;
+              }
+              if($value === "subscript"){
+                $versenumbers_subscript = true;
               }
             }
           }
           
           $verses_bold = false;
           $verses_italic = false;
+          $verses_underline = false;
+          $verses_strikethrough = false;
           
           if(isset($this->options['fontstyle_verses']) && $this->options['fontstyle_verses'] ){
             $verses_style = explode(",",$this->options['fontstyle_verses']);
@@ -759,10 +787,16 @@ class MySettingsPage
               if($value === "italic"){
                 $verses_italic = true;
               }
+              if($value === "underline"){
+                $verses_underline = true;
+              }
+              if($value === "strikethrough"){
+                $verses_strikethrough = true;
+              }
             }
           }
-          
-          $ff = $this->get_font_index($this->options['fontfamily_bibleget']);
+          $ff = false;
+          if(isset($this->options['fontfamily_bibleget']) && $this->options['fontfamily_bibleget']){ $ff = $this->get_font_index($this->options['fontfamily_bibleget']); }
           
           $cssdata = ""
             ."div.results { \n"
@@ -771,45 +805,38 @@ class MySettingsPage
             ."  padding: 12px; \n"
             ."  margin:12px auto; \n"
             ."  width: 80%; \n"
-            ."  font-family: " .((isset($this->options['fontfamily_bibleget']) && $ff !== false) ? "'".$this->safe_fonts[$ff]["font-family"]."',".(isset($this->safe_fonts[$ff]["fallback"]) ? "'".$this->safe_fonts[$ff]["fallback"]."',":"")."'".$this->safe_fonts[$ff]["generic_family"]."'" : "'Palatino Linotype'"). "; \n"
-            ."  font-size: .8em; \n"
+            ."  font-family: " .($ff !== false ? "'".$this->safe_fonts[$ff]["font-family"]."',".(isset($this->safe_fonts[$ff]["fallback"]) ? "'".$this->safe_fonts[$ff]["fallback"]."',":"")."'".$this->safe_fonts[$ff]["generic_family"]."'" : "'Palatino Linotype'"). "; \n"
             ."} \n"
             ."\n"
             ."div.results p.book { \n"
             ."  font-weight: ".($bookchapter_bold ? "bold" : "normal")."; \n"
             ."  font-style: ".($bookchapter_italic ? "italic" : "normal")."; \n"
+            ."  text-decoration: ".($bookchapter_underline ? "underline" : ($bookchapter_strikethrough ? "line-through" : "none"))."; \n"
             ."  font-size: ".(isset($this->options['fontsize_bookchapter']) && $this->options['fontsize_bookchapter'] ? number_format(($this->options['fontsize_bookchapter'] / 10),1,'.','') : "1.2" )."em; \n"
             ."  color: ".(isset($this->options['fontcolor_bookchapter']) && $this->options['fontcolor_bookchapter'] ? $this->options['fontcolor_bookchapter'] : "DarkRed")."; \n"
-            ."  margin: 0px;"
+            ."  margin: 0px; \n"
             ."} \n"
             ."\n"
             ."div.results p.verses { \n"
             ."  font-weight: ".($verses_bold ? "bold" : "normal")."; \n"
             ."  font-style: ".($verses_italic ? "italic" : "normal")."; \n"
+            ."  text-decoration: ".($verses_underline ? "underline" : ($verses_strikethrough ? "line-through" : "none"))."; \n"
             ."  line-height: ".(isset($this->options['linespacing_verses']) && $this->options['linespacing_verses'] ? $this->options['linespacing_verses'] : "150" )."%; \n"
             ."  color: ".(isset($this->options['fontcolor_verses']) && $this->options['fontcolor_verses'] ? $this->options['fontcolor_verses'] : "DarkGray")."; \n"
             ."  text-align: justify; \n"
             ."  font-size: ".(isset($this->options['fontsize_verses']) && $this->options['fontsize_verses'] ? number_format(($this->options['fontsize_verses'] / 10),1,'.','') : "1" )."em; \n"
-            ."  margin: 0px;"
-            ."} \n"
-            ." \n"
-            ."div.results p.verses span.sup,span.sub { \n"
-            ."  font-size: ".(isset($this->options['fontsize_versenumbers']) && $this->options['fontsize_versenumbers'] ? number_format(($this->options['fontsize_versenumbers'] / 10),1,'.','') : ".7" )."em; \n"
-            ."  vertical-align: baseline; \n"
-            ."  position: relative; \n"
+            ."  margin: 0px; \n"
             ."} \n"
             ." \n"
             ."div.results p.verses span.sup { \n"
+            ."  font-size: ".(isset($this->options['fontsize_versenumbers']) && $this->options['fontsize_versenumbers'] ? number_format(($this->options['fontsize_versenumbers'] / 10),1,'.','') : "0.8" )."em; \n"
+            ."  vertical-align: baseline; \n"
+            ."  position: relative; \n"
             ."  font-weight: ".($versenumbers_bold ? "bold" : "normal")."; \n"
             ."  font-style: ".($versenumbers_italic ? "italic" : "normal")."; \n"
-            ."  color: ".(isset($this->options['fontcolor_versenumbers']) && $this->options['fontcolor_versenumbers'] ? $this->options['fontcolor_versenumbers'] : "Red")."; \n"
-            ."  top: ".($versenumbers_superscript ? "-0.6" : "0")."em; \n"
-            ."} \n"
-            ."div.results p.verses span.sub { \n"
-            ."  font-size: 70%; \n"
-            ."  color: Red; \n"
-            ."  bottom: -0.6em; \n"
-            ."  display: none; \n"
+        	."  text-decoration: ".($versenumbers_underline ? "underline" : ($versenumbers_strikethrough ? "line-through" : "none"))."; \n"
+        	."  color: ".(isset($this->options['fontcolor_versenumbers']) && $this->options['fontcolor_versenumbers'] ? $this->options['fontcolor_versenumbers'] : "Red")."; \n"
+        	."  ".($versenumbers_superscript ? "top: -0.6em" : ($versenumbers_subscript ? "bottom: -0.6em" : "top: 0em") )."; \n"
             ."}";
           $file = plugin_dir_path( __FILE__ ) . 'css/styles.css';
           if(file_exists($file)){

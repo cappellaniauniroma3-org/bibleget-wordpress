@@ -4,16 +4,16 @@ div.results {
   padding: 12px; 
   margin:12px auto; 
   width: 80%; 
-  font-family: Georgia; 
-  font-size: .8em; 
+  font-family: 'Palatino Linotype'; 
 } 
 
 div.results p.book { 
   font-weight: bold; 
   font-style: normal; 
-  font-size: 1.2em; 
+  font-size: 1.4em; 
   color: #284f29; 
-  margin: 0px;} 
+  margin: 0px;
+} 
 
 div.results p.verses { 
   font-weight: normal; 
@@ -22,23 +22,15 @@ div.results p.verses {
   color: #646d73; 
   text-align: justify; 
   font-size: 1.0em; 
-  margin: 0px;} 
- 
-div.results p.verses span.sup,span.sub { 
-  font-size: 0.7em; 
-  vertical-align: baseline; 
-  position: relative; 
+  margin: 0px;
 } 
  
 div.results p.verses span.sup { 
+  font-size: 0.8em; 
+  vertical-align: baseline; 
+  position: relative; 
   font-weight: normal; 
   font-style: normal; 
   color: #c10005; 
   top: -0.6em; 
-} 
-div.results p.verses span.sub { 
-  font-size: 70%; 
-  color: Red; 
-  bottom: -0.6em; 
-  display: none; 
 }

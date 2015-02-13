@@ -7,8 +7,8 @@ Array.prototype.remove = function(from, to) {
   return this.push.apply(this, rest);
 };
 
-console.log("admin.js is successfully loaded");
-console.log(obj);
+//console.log("admin.js is successfully loaded");
+//console.log(obj);
 function get_font_index(fontfamily){
 	for(font in obj.safe_fonts){
 		if(obj.safe_fonts[font]["font-family"] == fontfamily){ return font; }
@@ -32,18 +32,21 @@ jQuery(document).ready(function(){
 	}	
 	jQuery("#preview p").css({"font-family":ffstr});
 	
-	fval = jQuery("#fontsize_bookchapter").val();
-	jQuery("#preview .bibleversion").css({"font-size":fval+'px'});
-	jQuery("#preview .bookchapter").css({"font-size":fval+'px'});
+	fval = parseFloat(jQuery("#fontsize_bookchapter").val()) / 10;
+	if(fval<1){ fval = "0"+fval; }
+	//jQuery("#preview .bibleversion").css({"font-size":fval+'em'});
+	jQuery("#preview .bookchapter").css({"font-size":fval+'em'});
 
-	fval = jQuery("#fontsize_versenumbers").val();
-	jQuery("#preview .bibleversenumber").css({"font-size":fval+'px'});
+	fval = parseFloat(jQuery("#fontsize_versenumbers").val()) / 10;
+	if(fval<1){ fval = "0"+fval; }
+	jQuery("#preview .bibleversenumber").css({"font-size":fval+'em'});
 	
-	fval = jQuery("#fontsize_verses").val();
-	jQuery("#preview .bibleversetext").css({"font-size":fval+'px'});
+	fval = parseFloat(jQuery("#fontsize_verses").val()) / 10;
+	if(fval<1){ fval = "0"+fval; }
+	jQuery("#preview .bibleversetext").css({"font-size":fval+'em'});
 	
 	fval = jQuery("#fontcolor_bookchapter").val();
-	jQuery("#preview .bibleversion").css({"color":fval});
+	//jQuery("#preview .bibleversion").css({"color":fval});
 	jQuery("#preview .bookchapter").css({"color":fval});
 
 	fval = jQuery("#fontcolor_versenumbers").val();
@@ -52,10 +55,10 @@ jQuery(document).ready(function(){
 	fval = jQuery("#fontcolor_verses").val();
 	jQuery("#preview .bibleversetext").css({"color":fval});
 	
-	if(jQuery("#bkchbld").prop("checked")){ jQuery("#preview .bibleversion,#preview .bookchapter").css({"font-weight":"bold"}); }
-	if(jQuery("#bkchitlc").prop("checked")){ jQuery("#preview .bibleversion,#preview .bookchapter").css({"font-style":"italic"}); }
-	if(jQuery("#bkchundr").prop("checked")){ jQuery("#preview .bibleversion,#preview .bookchapter").css({"text-decoration":"underline"}); }
-	if(jQuery("#bkchstrk").prop("checked")){ jQuery("#preview .bibleversion,#preview .bookchapter").css({"text-decoration":"line-through"}); }
+	if(jQuery("#bkchbld").prop("checked")){ jQuery("#preview .bookchapter").css({"font-weight":"bold"}); }
+	if(jQuery("#bkchitlc").prop("checked")){ jQuery("#preview .bookchapter").css({"font-style":"italic"}); }
+	if(jQuery("#bkchundr").prop("checked")){ jQuery("#preview .bookchapter").css({"text-decoration":"underline"}); }
+	if(jQuery("#bkchstrk").prop("checked")){ jQuery("#preview .bookchapter").css({"text-decoration":"line-through"}); }
 	
 	if(jQuery("#vsnmbld").prop("checked")){ jQuery("#preview .bibleversenumber").css({"font-weight":"bold"}); }
 	if(jQuery("#vsnmitlc").prop("checked")){ jQuery("#preview .bibleversenumber").css({"font-style":"italic"}); }
@@ -93,19 +96,22 @@ jQuery(document).ready(function(){
 	});
 	
 	jQuery("#fontsize_verses").change(function(){
-		fval = jQuery(this).val();
-		jQuery("#preview .bibleversetext").css({"font-size":fval+'px'});
+		fval = parseFloat(jQuery(this).val()) / 10;
+		if(fval<1){ fval = "0"+fval; }
+		jQuery("#preview .bibleversetext").css({"font-size":fval+'em'});
 	});
 	
 	jQuery("#fontsize_versenumbers").change(function(){
-		fval = jQuery(this).val();
-		jQuery("#preview .bibleversenumber").css({"font-size":fval+'px'});
+		fval = parseFloat(jQuery(this).val()) / 10;
+		if(fval<1){ fval = "0"+fval; }
+		jQuery("#preview .bibleversenumber").css({"font-size":fval+'em'});
 	});
 	
 	jQuery("#fontsize_bookchapter").change(function(){
-		fval = jQuery(this).val();
-		jQuery("#preview .bibleversion").css({"font-size":fval+'px'});
-		jQuery("#preview .bookchapter").css({"font-size":fval+'px'});
+		fval = parseFloat(jQuery(this).val()) / 10;
+		if(fval<1){ fval = "0"+fval; }
+		//jQuery("#preview .bibleversion").css({"font-size":fval+'em'});
+		jQuery("#preview .bookchapter").css({"font-size":fval+'em'});
 	});
 
 	jQuery("#fontcolor_verses").change(function(){
@@ -120,7 +126,7 @@ jQuery(document).ready(function(){
 	
 	jQuery("#fontcolor_bookchapter").change(function(){
 		fval = jQuery(this).val();
-		jQuery("#preview .bibleversion").css({"color":fval});
+		//jQuery("#preview .bibleversion").css({"color":fval});
 		jQuery("#preview .bookchapter").css({"color":fval});
 	});
 
@@ -164,8 +170,8 @@ jQuery(document).ready(function(){
 		if(jQuery("#fontstyle_bookchapter").val()!==""){
 			fval = jQuery("#fontstyle_bookchapter").val().split(",");
 		}
-		if(jQuery(this).prop("checked")){ jQuery("#preview .bibleversion,#preview .bookchapter").css({"font-weight":"bold"}); fval.push("bold"); }
-		else{ jQuery("#preview .bibleversion,#preview .bookchapter").css({"font-weight":"normal"}); var index = fval.indexOf("bold"); if(index!=-1){ fval.remove(index); } }
+		if(jQuery(this).prop("checked")){ jQuery("#preview .bookchapter").css({"font-weight":"bold"}); fval.push("bold"); }
+		else{ jQuery("#preview .bookchapter").css({"font-weight":"normal"}); var index = fval.indexOf("bold"); if(index!=-1){ fval.remove(index); } }
 		var myval = fval.join(",");
 		jQuery("#fontstyle_bookchapter").val(myval);
 	});
@@ -175,8 +181,8 @@ jQuery(document).ready(function(){
 		if(jQuery("#fontstyle_bookchapter").val()!==""){
 			fval = jQuery("#fontstyle_bookchapter").val().split(",");
 		}
-		if(jQuery(this).prop("checked")){ jQuery("#preview .bibleversion,#preview .bookchapter").css({"font-style":"italic"}); fval.push("italic"); }
-		else{ jQuery("#preview .bibleversion,#preview .bookchapter").css({"font-style":"normal"}); var index = fval.indexOf("italic"); if(index!=-1){ fval.remove(index); } }
+		if(jQuery(this).prop("checked")){ jQuery("#preview .bookchapter").css({"font-style":"italic"}); fval.push("italic"); }
+		else{ jQuery("#preview .bookchapter").css({"font-style":"normal"}); var index = fval.indexOf("italic"); if(index!=-1){ fval.remove(index); } }
 		var myval = fval.join(",");
 		jQuery("#fontstyle_bookchapter").val(myval);
 	});
@@ -186,8 +192,8 @@ jQuery(document).ready(function(){
 		if(jQuery("#fontstyle_bookchapter").val()!==""){
 			fval = jQuery("#fontstyle_bookchapter").val().split(",");
 		}
-		if(jQuery(this).prop("checked")){ jQuery("#bkchstrk").prop("checked",false); jQuery(".bibleget-buttonset").buttonset("refresh"); jQuery("#preview .bibleversion,#preview .bookchapter").css({"text-decoration":"underline"}); fval.push("underline"); }
-		else{ jQuery("#preview .bibleversion,#preview .bookchapter").css({"text-decoration":"none"}); var index = fval.indexOf("underline"); if(index!=-1){ fval.remove(index); } }
+		if(jQuery(this).prop("checked")){ jQuery("#bkchstrk").prop("checked",false); jQuery(".bibleget-buttonset").buttonset("refresh"); jQuery("#preview .bookchapter").css({"text-decoration":"underline"}); fval.push("underline"); }
+		else{ jQuery("#preview .bookchapter").css({"text-decoration":"none"}); var index = fval.indexOf("underline"); if(index!=-1){ fval.remove(index); } }
 		var myval = fval.join(",");
 		jQuery("#fontstyle_bookchapter").val(myval);
 	});
@@ -197,8 +203,8 @@ jQuery(document).ready(function(){
 		if(jQuery("#fontstyle_bookchapter").val()!==""){
 			fval = jQuery("#fontstyle_bookchapter").val().split(",");
 		}
-		if(jQuery(this).prop("checked")){ jQuery("#bkchundr").prop("checked",false); jQuery(".bibleget-buttonset").buttonset("refresh"); jQuery("#preview .bibleversion,#preview .bookchapter").css({"text-decoration":"line-through"}); fval.push("strikethrough"); }
-		else{ jQuery("#preview .bibleversion,#preview .bookchapter").css({"text-decoration":"none"}); var index = fval.indexOf("strikethrough"); if(index!=-1){ fval.remove(index); } }
+		if(jQuery(this).prop("checked")){ jQuery("#bkchundr").prop("checked",false); jQuery(".bibleget-buttonset").buttonset("refresh"); jQuery("#preview .bookchapter").css({"text-decoration":"line-through"}); fval.push("strikethrough"); }
+		else{ jQuery("#preview .bookchapter").css({"text-decoration":"none"}); var index = fval.indexOf("strikethrough"); if(index!=-1){ fval.remove(index); } }
 		var myval = fval.join(",");
 		jQuery("#fontstyle_bookchapter").val(myval);
 	});
@@ -300,7 +306,7 @@ jQuery(document).ready(function(){
 	
 	jQuery("#versionselect").change(function(){
 		var fval = jQuery(this).val();
-		console.log(fval);
+		//console.log(fval);
 		if(fval!==null && fval.length>0){
 			jQuery("#favorite_version").val(fval.join(","));
 		}
