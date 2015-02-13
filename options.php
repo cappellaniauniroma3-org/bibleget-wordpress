@@ -16,6 +16,21 @@ class MySettingsPage
     {
         add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
         add_action( 'admin_init', array( $this, 'page_init' ) );
+        $this->safe_fonts = array(
+    			array("font-family" => "Arial", "fallback" => "Helvetica", "generic-family" => "sans-serif"),
+    			array("font-family" => "Arial Black", "fallback" => "Gadget", "generic-family" => "sans-serif"),
+    			array("font-family" => "Book Antiqua", "fallback" => "Palatino", "generic-family" => "serif"),
+    			array("font-family" => "Courier New", "fallback" => "Courier", "generic-family" => "monospace"),
+    			array("font-family" => "Georgia", "generic-family" => "serif"),
+    			array("font-family" => "Impact", "fallback" => "Charcoal", "generic-family" => "sans-serif"),
+    			array("font-family" => "Lucida Console", "fallback" => "Monaco", "generic-family" => "monospace"),
+    			array("font-family" => "Lucida Sans Unicode", "fallback" => "Lucida Grande", "generic-family" => "sans-serif"),
+    			array("font-family" => "Palatino Linotype", "fallback" => "Palatino", "generic-family" => "serif"),
+    			array("font-family" => "Tahoma", "fallback" => "Geneva", "generic-family" => "sans-serif"),
+    			array("font-family" => "Times New Roman", "fallback" => "Times", "generic-family" => "serif"),
+    			array("font-family" => "Trebuchet MS", "fallback" => "Helvetica", "generic-family" => "sans-serif"),
+    			array("font-family" => "Verdana", "fallback" => "Geneva", "generic-family" => "sans-serif")
+    	);
     }
 
     /**
@@ -45,21 +60,6 @@ class MySettingsPage
     {
         // Set class property
         $this->options = get_option( 'bibleget_settings' );
-        $this->safe_fonts = array(
-    			array("font-family" => "Arial", "fallback" => "Helvetica", "generic-family" => "sans-serif"),
-    			array("font-family" => "Arial Black", "fallback" => "Gadget", "generic-family" => "sans-serif"),
-    			array("font-family" => "Book Antiqua", "fallback" => "Palatino", "generic-family" => "serif"),
-    			array("font-family" => "Courier New", "fallback" => "Courier", "generic-family" => "monospace"),
-    			array("font-family" => "Georgia", "generic-family" => "serif"),
-    			array("font-family" => "Impact", "fallback" => "Charcoal", "generic-family" => "sans-serif"),
-    			array("font-family" => "Lucida Console", "fallback" => "Monaco", "generic-family" => "monospace"),
-    			array("font-family" => "Lucida Sans Unicode", "fallback" => "Lucida Grande", "generic-family" => "sans-serif"),
-    			array("font-family" => "Palatino Linotype", "fallback" => "Palatino", "generic-family" => "serif"),
-    			array("font-family" => "Tahoma", "fallback" => "Geneva", "generic-family" => "sans-serif"),
-    			array("font-family" => "Times New Roman", "fallback" => "Times", "generic-family" => "serif"),
-    			array("font-family" => "Trebuchet MS", "fallback" => "Helvetica", "generic-family" => "sans-serif"),
-    			array("font-family" => "Verdana", "fallback" => "Geneva", "generic-family" => "sans-serif")
-    	);
         
         $vsnmstyles = array();
         if(isset($this->options['fontstyle_versenumbers'] ) && $this->options['fontstyle_versenumbers']){
@@ -70,7 +70,7 @@ class MySettingsPage
         <div id="page-wrap">
             <?php screen_icon(); ?>
             <h2 id="bibleget-h2"><?php _e("BibleGet IO Settings","bibleget-io") ?></h2>           
-            <div id="form-wrapper">
+            <div id="form-wrapper" class="leftfloat">
             <form method="post" action="options.php">
             <?php
                 // This prints out all hidden setting fields
@@ -80,17 +80,30 @@ class MySettingsPage
             ?>
             </form>
             </div>
-            <div>
-            <fieldset id="preview">
-            <legend><?php _e("Preview","bibleget-io") ?></legend>
-            	<p class="bibleversion">CEI2008</p>
-            	<p class="bookchapter"><span class="biblebook"><?php _e("Genesis","bibleget-io") ?></span> <span class="biblechapter">1</span></p>
-            	<p class="verses">
-            		<span class="bibleversenumber<?php if(in_array("superscript",$vsnmstyles)){ echo " sup";}else if(in_array("subscript",$vsnmstyle)){ echo " sub";} ?>">1</span><span class="bibleversetext"><?php _e("In the beginning, when God created the heavens and the earth—","bibleget-io") ?></span> <span class="bibleversenumber<?php if(in_array("superscript",$vsnmstyles)){ echo " sup";}else if(in_array("subscript",$vsnmstyle)){ echo " sub";} ?>">2</span><span class="bibleversetext"><?php _e("and the earth was without form or shape, with darkness over the abyss and a mighty wind sweeping over the waters—","bibleget-io") ?></span> <span class="bibleversenumber<?php if(in_array("superscript",$vsnmstyles)){ echo " sup";}else if(in_array("subscript",$vsnmstyle)){ echo " sub";} ?>">3</span><span class="bibleversetext"><?php _e("Then God said: Let there be light, and there was light.","bibleget-io") ?></span>
-            	</p>
-            </fieldset>
+            <div class="leftfloat">
+            	<fieldset id="preview">
+            	<legend><?php _e("Preview","bibleget-io") ?></legend>
+            		<p class="bibleversion">CEI2008</p>
+            		<p class="bookchapter"><span class="biblebook"><?php _e("Genesis","bibleget-io") ?></span> <span class="biblechapter">1</span></p>
+            		<p class="verses">
+            			<span class="bibleversenumber<?php if(in_array("superscript",$vsnmstyles)){ echo " sup";}else if(in_array("subscript",$vsnmstyle)){ echo " sub";} ?>">1</span><span class="bibleversetext"><?php _e("In the beginning, when God created the heavens and the earth—","bibleget-io") ?></span> <span class="bibleversenumber<?php if(in_array("superscript",$vsnmstyles)){ echo " sup";}else if(in_array("subscript",$vsnmstyle)){ echo " sub";} ?>">2</span><span class="bibleversetext"><?php _e("and the earth was without form or shape, with darkness over the abyss and a mighty wind sweeping over the waters—","bibleget-io") ?></span> <span class="bibleversenumber<?php if(in_array("superscript",$vsnmstyles)){ echo " sup";}else if(in_array("subscript",$vsnmstyle)){ echo " sub";} ?>">3</span><span class="bibleversetext"><?php _e("Then God said: Let there be light, and there was light.","bibleget-io") ?></span>
+            		</p>
+            	</fieldset>
             </div>
             <div id="page-clear"></div>
+        	<div id="bibleget-css-editor">
+           		<h3><?php _e("Edit the stylesheet directly","bibleget-io")?></h3>
+           		<h4><?php _e("You can edit and save the stylesheet directly, but any changes you make directly to the stylesheet will be overwritten the next time you use the above options form. Also the changes made directly here to the stylesheet will not be reflected in the preview box, they will only be reflected on the pages that contain the shortcode.","bibleget-io") ?></h4>
+				<?php $file = plugin_dir_path( __FILE__ ) . 'css/styles.css'; ?>
+           		<fieldset id="bibleget-edit-stylesheet">
+           		<legend><?php echo $file; ?></legend>
+           			<pre><code contenteditable="true" spellcheck="false" id="bibleget-edited-css"><?php 
+           				$string = file_get_contents($file);
+           				echo $string; 
+           			?></code></pre>
+           		</fieldset>
+           		<button id="bibleget-save-stylesheet-btn" class="button button-primary"><?php _e("SAVE STYLESHEET","bibleget-io") ?></button>
+        	</div>
         </div>
         <?php
     }
@@ -706,7 +719,7 @@ class MySettingsPage
     			array("font-family" => "Trebuchet MS", "fallback" => "Helvetica", "generic-family" => "sans-serif"),
     			array("font-family" => "Verdana", "fallback" => "Geneva", "generic-family" => "sans-serif")
     	);
-    	$obj = array("options" => $myoptions,"safe_fonts" => $safefonts);
+    	$obj = array("options" => $myoptions,"safe_fonts" => $safefonts,"savecss" => plugins_url( 'savecss.php', __FILE__ ));
     	wp_localize_script( 'admin-js', 'obj', $obj );
     	wp_enqueue_script( 'admin-js' );
     }
@@ -805,7 +818,7 @@ class MySettingsPage
             ."  padding: 12px; \n"
             ."  margin:12px auto; \n"
             ."  width: 80%; \n"
-            ."  font-family: " .($ff !== false ? "'".$this->safe_fonts[$ff]["font-family"]."',".(isset($this->safe_fonts[$ff]["fallback"]) ? "'".$this->safe_fonts[$ff]["fallback"]."',":"")."'".$this->safe_fonts[$ff]["generic_family"]."'" : "'Palatino Linotype'"). "; \n"
+            ."  font-family: " .($ff !== false ? "'".$this->safe_fonts[$ff]["font-family"]."',".(isset($this->safe_fonts[$ff]["fallback"]) ? "'".$this->safe_fonts[$ff]["fallback"]."',":"")."'".$this->safe_fonts[$ff]["generic_family"]."'" : "'Palatino Linotype',Palatino,serif"). "; \n"
             ."} \n"
             ."\n"
             ."div.results p.book { \n"
@@ -838,6 +851,7 @@ class MySettingsPage
         	."  color: ".(isset($this->options['fontcolor_versenumbers']) && $this->options['fontcolor_versenumbers'] ? $this->options['fontcolor_versenumbers'] : "Red")."; \n"
         	."  ".($versenumbers_superscript ? "top: -0.6em" : ($versenumbers_subscript ? "bottom: -0.6em" : "top: 0em") )."; \n"
             ."}";
+          $cssdata = trim($cssdata);
           $file = plugin_dir_path( __FILE__ ) . 'css/styles.css';
           if(file_exists($file)){
             if(file_put_contents ($file,$cssdata)){

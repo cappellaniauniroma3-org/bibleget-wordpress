@@ -78,7 +78,41 @@ jQuery(document).ready(function(){
 		jQuery("#favorite_version").val(fval.join(","));
 	}
 	
+	/* let's do some calculations to get the preview box to stick above the css edit area */
+	var scroll = jQuery(window).scrollTop();
 	
+	cssdiv = jQuery("#bibleget-css-editor").offset().top;
+	previewfieldheight = jQuery("#preview").height();
+	previewfieldwidth = jQuery("#preview").width();
+	pvflag = true;
+	var prevoff = jQuery("#preview").offset();
+	
+	if(scroll > cssdiv - prevoff.top - previewfieldheight - 50){
+		/* var prevpos = jQuery("#preview").offset(); */
+		prevoff.top = prevoff.top - scroll;
+		var prevtop = cssdiv - prevoff.top - previewfieldheight;
+		jQuery("#preview").css({"position":"absolute","top":prevtop+"px","width":previewfieldwidth+"px"});
+		pvflag = false;
+	}
+	
+	jQuery(window).scroll(function (event) {
+	    var scrollnow = jQuery(window).scrollTop();
+	    if(scrollnow > cssdiv - prevoff.top - previewfieldheight - 50){
+	    	if(pvflag){
+	    		var prevpos = jQuery("#preview").offset();
+	    		var prevtop = prevpos.top - 35;
+	    		jQuery("#preview").css({"position":"absolute","top":prevtop+"px","width":previewfieldwidth+"px"});
+	    		pvflag = false;
+	    	}
+	    }
+	    else{
+	    	if(!pvflag){
+	    		/* var prevpos2 = jQuery("#preview").offset(); */
+	    		jQuery("#preview").css({"position":"fixed","top":prevoff.top+"px"});
+	    		pvflag = true;
+	    	}
+	    }
+	});
 	
 	jQuery("#fontfamily_bibleget").change(function(){
 		fval = jQuery(this).val();
@@ -192,8 +226,19 @@ jQuery(document).ready(function(){
 		if(jQuery("#fontstyle_bookchapter").val()!==""){
 			fval = jQuery("#fontstyle_bookchapter").val().split(",");
 		}
-		if(jQuery(this).prop("checked")){ jQuery("#bkchstrk").prop("checked",false); jQuery(".bibleget-buttonset").buttonset("refresh"); jQuery("#preview .bookchapter").css({"text-decoration":"underline"}); fval.push("underline"); }
-		else{ jQuery("#preview .bookchapter").css({"text-decoration":"none"}); var index = fval.indexOf("underline"); if(index!=-1){ fval.remove(index); } }
+		if(jQuery(this).prop("checked")){ 
+			jQuery("#bkchstrk").prop("checked",false); 
+			jQuery(".bibleget-buttonset").buttonset("refresh"); 
+			jQuery("#preview .bookchapter").css({"text-decoration":"underline"}); 
+			var index = fval.indexOf("strikethrough"); 
+			if(index!=-1){ fval.remove(index); } 
+			fval.push("underline"); 
+		}
+		else{ 
+			jQuery("#preview .bookchapter").css({"text-decoration":"none"}); 
+			var index = fval.indexOf("underline"); 
+			if(index!=-1){ fval.remove(index); } 
+		}
 		var myval = fval.join(",");
 		jQuery("#fontstyle_bookchapter").val(myval);
 	});
@@ -203,8 +248,18 @@ jQuery(document).ready(function(){
 		if(jQuery("#fontstyle_bookchapter").val()!==""){
 			fval = jQuery("#fontstyle_bookchapter").val().split(",");
 		}
-		if(jQuery(this).prop("checked")){ jQuery("#bkchundr").prop("checked",false); jQuery(".bibleget-buttonset").buttonset("refresh"); jQuery("#preview .bookchapter").css({"text-decoration":"line-through"}); fval.push("strikethrough"); }
-		else{ jQuery("#preview .bookchapter").css({"text-decoration":"none"}); var index = fval.indexOf("strikethrough"); if(index!=-1){ fval.remove(index); } }
+		if(jQuery(this).prop("checked")){ 
+			jQuery("#bkchundr").prop("checked",false); 
+			jQuery(".bibleget-buttonset").buttonset("refresh"); 
+			jQuery("#preview .bookchapter").css({"text-decoration":"line-through"}); 
+			var index = fval.indexOf("underline"); 
+			if(index!=-1){ fval.remove(index); } 
+			fval.push("strikethrough"); 
+		}
+		else{ 
+			jQuery("#preview .bookchapter").css({"text-decoration":"none"}); 
+			var index = fval.indexOf("strikethrough"); if(index!=-1){ fval.remove(index); } 
+		}
 		var myval = fval.join(",");
 		jQuery("#fontstyle_bookchapter").val(myval);
 	});
@@ -236,8 +291,19 @@ jQuery(document).ready(function(){
 		if(jQuery("#fontstyle_versenumbers").val()!==""){
 			fval = jQuery("#fontstyle_versenumbers").val().split(",");
 		}
-		if(jQuery(this).prop("checked")){ jQuery("#vsnmstrk").prop("checked",false); jQuery(".bibleget-buttonset").buttonset("refresh"); jQuery("#preview .bibleversenumber").css({"text-decoration":"underline"}); fval.push("underline"); }
-		else{ jQuery("#preview .bibleversenumber").css({"text-decoration":"none"}); var index = fval.indexOf("underline"); if(index!=-1){ fval.remove(index); } }
+		if(jQuery(this).prop("checked")){ 
+			jQuery("#vsnmstrk").prop("checked",false); 
+			jQuery(".bibleget-buttonset").buttonset("refresh"); 
+			jQuery("#preview .bibleversenumber").css({"text-decoration":"underline"}); 
+			var index = fval.indexOf("strikethrough"); 
+			if(index!=-1){ fval.remove(index); } 
+			fval.push("underline"); 
+		}
+		else{ 
+			jQuery("#preview .bibleversenumber").css({"text-decoration":"none"}); 
+			var index = fval.indexOf("underline"); 
+			if(index!=-1){ fval.remove(index); } 
+		}
 		var myval = fval.join(",");
 		jQuery("#fontstyle_versenumbers").val(myval);
 	});
@@ -247,8 +313,19 @@ jQuery(document).ready(function(){
 		if(jQuery("#fontstyle_versenumbers").val()!==""){
 			fval = jQuery("#fontstyle_versenumbers").val().split(",");
 		}
-		if(jQuery(this).prop("checked")){ jQuery("#vsnmundr").prop("checked",false); jQuery(".bibleget-buttonset").buttonset("refresh"); jQuery("#preview .bibleversenumber").css({"text-decoration":"line-through"}); fval.push("strikethrough"); }
-		else{ jQuery("#preview .bibleversenumber").css({"text-decoration":"none"}); var index = fval.indexOf("strikethrough"); if(index!=-1){ fval.remove(index); } }
+		if(jQuery(this).prop("checked")){ 
+			jQuery("#vsnmundr").prop("checked",false); 
+			jQuery(".bibleget-buttonset").buttonset("refresh"); 
+			jQuery("#preview .bibleversenumber").css({"text-decoration":"line-through"}); 
+			var index = fval.indexOf("underline"); 
+			if(index!=-1){ fval.remove(index); } 
+			fval.push("strikethrough"); 
+		}
+		else{ 
+			jQuery("#preview .bibleversenumber").css({"text-decoration":"none"}); 
+			var index = fval.indexOf("strikethrough"); 
+			if(index!=-1){ fval.remove(index); } 
+		}
 		var myval = fval.join(",");
 		jQuery("#fontstyle_versenumbers").val(myval);
 	});
@@ -282,8 +359,19 @@ jQuery(document).ready(function(){
 		if(jQuery("#fontstyle_verses").val()!==""){
 			fval = jQuery("#fontstyle_verses").val().split(",");
 		}
-		if(jQuery(this).prop("checked")){ jQuery("#vstxstrk").prop("checked",false); jQuery(".bibleget-buttonset").buttonset("refresh"); jQuery("#preview .bibleversetext").css({"text-decoration":"underline"}); fval.push("underline"); }
-		else{ jQuery("#preview .bibleversetext").css({"text-decoration":"none"}); var index = fval.indexOf("underline"); if(index!=-1){ fval.remove(index); } }
+		if(jQuery(this).prop("checked")){ 
+			jQuery("#vstxstrk").prop("checked",false); 
+			jQuery(".bibleget-buttonset").buttonset("refresh"); 
+			jQuery("#preview .bibleversetext").css({"text-decoration":"underline"}); 
+			var index = fval.indexOf("strikethrough"); 
+			if(index!=-1){ fval.remove(index); } 
+			fval.push("underline"); 
+		}
+		else{ 
+			jQuery("#preview .bibleversetext").css({"text-decoration":"none"}); 
+			var index = fval.indexOf("underline"); 
+			if(index!=-1){ fval.remove(index); } 
+		}
 		var myval = fval.join(",");
 		jQuery("#fontstyle_verses").val(myval);
 	});
@@ -293,8 +381,19 @@ jQuery(document).ready(function(){
 		if(jQuery("#fontstyle_verses").val()!==""){
 			fval = jQuery("#fontstyle_verses").val().split(",");
 		}
-		if(jQuery(this).prop("checked")){ jQuery("#vstxundr").prop("checked",false); jQuery(".bibleget-buttonset").buttonset("refresh"); jQuery("#preview .bibleversetext").css({"text-decoration":"line-through"}); fval.push("strikethrough"); }
-		else{ jQuery("#preview .bibleversetext").css({"text-decoration":"none"}); var index = fval.indexOf("strikethrough"); if(index!=-1){ fval.remove(index); } }
+		if(jQuery(this).prop("checked")){ 
+			jQuery("#vstxundr").prop("checked",false); 
+			jQuery(".bibleget-buttonset").buttonset("refresh"); 
+			jQuery("#preview .bibleversetext").css({"text-decoration":"line-through"}); 
+			var index = fval.indexOf("underline"); 
+			if(index!=-1){ fval.remove(index); } 
+			fval.push("strikethrough"); 
+		}
+		else{ 
+			jQuery("#preview .bibleversetext").css({"text-decoration":"none"}); 
+			var index = fval.indexOf("strikethrough"); 
+			if(index!=-1){ fval.remove(index); } 
+		}
 		var myval = fval.join(",");
 		jQuery("#fontstyle_verses").val(myval);
 	});
@@ -313,6 +412,40 @@ jQuery(document).ready(function(){
 		else{
 			jQuery("#favorite_version").val('');
 		}
+	});
+	
+	jQuery("#bibleget-save-stylesheet-btn").click(function(){
+		file = jQuery("#bibleget-edit-stylesheet legend").text();
+		contents = jQuery("#bibleget-edited-css").text();
+		jQuery.ajax({
+			url:obj.savecss,
+			type:"POST",
+			data:{"file":file,"contents":contents},
+			success:function(data){
+				var succeed = "DarkRed";
+				if(data=="UPDATE SUCCESSFUL"){ succeed = "DarkGreen"; }
+				var diag = jQuery('<div><span style="font-weight:bold;color:'+succeed+'">'+data+'</span></div>').dialog({
+					modal:true,
+					open: function(event, ui){
+					     setTimeout(function(){ diag.fadeTo('slow',0,function(){ diag.dialog('close'); }); },3000);
+					},
+					close: function(event, ui){
+						diag.remove();
+					}
+				});
+			},
+			error:function(jqXHR, textStatus, errorThrown){
+				var diag = jQuery('<div><span style="font-weight:bold;color:DarkRed;">('+textStatus+') '+errorThrown+' while attempting to make an ajax request to: '+obj.savecss+'</span></div>').dialog({
+					modal:true,
+					open: function(event, ui){
+					     setTimeout(function(){ diag.fadeTo('slow',0,function(){ diag.dialog('close'); }); },3000);
+					},
+					close: function(event, ui){
+						diag.remove();
+					}
+				});
+			}
+		});
 	});
 	
 });
