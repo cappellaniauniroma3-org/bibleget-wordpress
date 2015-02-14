@@ -143,7 +143,8 @@ function bibleget_shortcode($atts, $content = null) {
    	foreach($versions as $version){
    		if(!in_array($version,$validversions)){
 			$optionsurl = admin_url("options-general.php?page=bibleget-settings-admin");
-   			$output = '<span style="color:Red;font-weight:bold;">'.printf(__('The requested version "%s" is not valid, please check the list of valid versions in the <a href="%s">settings page</a>',"bibleget-io"),$version,$optionsurl).'</span>';
+   			/* translators: you must not change the placeholders \"%s\" or the html <a href=\"%s\">, </a>  */
+			$output = '<span style="color:Red;font-weight:bold;">'.sprintf(__('The requested version "%s" is not valid, please check the list of valid versions in the <a href="%s">settings page</a>',"bibleget-io"),$version,$optionsurl).'</span>';
    			return '<div class="bibleget-quote-div">' . $output . '</div>';
    		}
    	}
@@ -169,7 +170,8 @@ function bibleget_shortcode($atts, $content = null) {
 			return '<div class="bibleget-quote-div">' . $output . '</div>';
 		}
 	} else {
-		$output = '<span style="color:Red;font-weight:bold;">' . __ ( "There are errors in the shortcode", "bibleget-io" ) . ' &apos;[bibleget]&apos;:</span><br />' . $queries;
+		/* translators: do not translate "shortcode" unless the version of wordpress in your language uses a translated term to refer to shortcodes */
+		$output = '<span style="color:Red;font-weight:bold;">' . __( "There are errors in the shortcode, please check carefully your query syntax:", "bibleget-io" ) . '&lt;'.$a['query'].'&gt;<br />' . $queries . '</span>';
 		return '<div class="bibleget-quote-div">' . $output . '</div>';
 	}
     
@@ -194,7 +196,7 @@ function queryServer($finalquery){
    		$output = substr($output,0,strpos($output, "<title")) . substr($output,strpos($output, "</title"),strlen($output));
    	}
    	else{
-   		$output = '<span style="color:Red;font-weight:bold;">'.__("There was an error communicating with the server, please wait and try again: ","bibleget-io").' &apos;'.curl_error($ch).'&apos;: '.$finalquery.'</span>';
+   		$output = '<span style="color:Red;font-weight:bold;">'.__("There was an error communicating with the BibleGet server, please wait a few minutes and try again: ","bibleget-io").' &apos;'.curl_error($ch).'&apos;: '.$finalquery.'</span>';
    	}
    	curl_close($ch);    	 
    
@@ -251,7 +253,8 @@ function processQueries($queries,$versions){
 		$thisquery = toProperCase($value); //shouldn't be necessary because already array_mapped, but better safe than sorry
 		if($key===0){
 			if(!preg_match("/^[1-3]{0,1}((\p{L}\p{M}*)+)/",$thisquery)){
-				$notices[] = __("First query string must start with a valid book abbreviation!","bibleget-io");
+				/* translators: do not change the placeholder <%s> */
+				$notices[] = sprintf(__("The first query <%s> must start with a valid book abbreviation!","bibleget-io"),$thisquery);
 				continue;
 			}
 		}
@@ -272,17 +275,22 @@ function processQueries($queries,$versions){
 function checkQuery($thisquery,$indexes,$thisbook=""){
 	//write_log("value of thisquery = ".$thisquery);
 	$errorMessages = array();
+	/* translators: 'commas', 'dots', and 'dashes' refer to the bible citation notation; in some notations (such as english notation) colons are used instead of commas, and commas are used instead of dots */
 	$errorMessages[0] = __("There cannot be more commas than there are dots.","bibleget-io");
 	$errorMessages[1] = __("You must have a valid chapter following the book abbreviation!","bibleget-io");
 	$errorMessages[2] = __("The book abbreviation is not a valid abbreviation. Please check the documentation for a list of correct abbreviations.","bibleget-io");
+	/* translators: 'commas', 'dots', and 'dashes' refer to the bible citation notation; in some notations (such as english notation) colons are used instead of commas, and commas are used instead of dots */
 	$errorMessages[3] = __("You cannot use a dot without first using a comma. A dot is a liason between verses, which are separated from the chapter by a comma.","bibleget-io");
+	/* translators: 'commas', 'dots', and 'dashes' refer to the bible citation notation; in some notations (such as english notation) colons are used instead of commas, and commas are used instead of dots */
 	$errorMessages[4] = __("A dot must be preceded and followed by 1 to 3 digits of which the first digit cannot be zero.","bibleget-io");
+	/* translators: 'commas', 'dots', and 'dashes' refer to the bible citation notation; in some notations (such as english notation) colons are used instead of commas, and commas are used instead of dots */
 	$errorMessages[5] = __("A comma must be preceded and followed by 1 to 3 digits of which the first digit cannot be zero.","bibleget-io");
 	$errorMessages[6] = __("A dash must be preceded and followed by 1 to 3 digits of which the first digit cannot be zero.","bibleget-io");
 	$errorMessages[7] = __("If there is a chapter-verse construct following a dash, there must also be a chapter-verse construct preceding the same dash.","bibleget-io");
+	/* translators: 'commas', 'dots', and 'dashes' refer to the bible citation notation; in some notations (such as english notation) colons are used instead of commas, and commas are used instead of dots */
 	$errorMessages[8] = __("There are multiple dashes in the query, but there are not enough dots. There can only be one more dash than dots.","bibleget-io");
 	/* translators: the expressions %1$d, %2$d, and %3$s must be left as is, they will be substituted dynamically by values in the script. See http://php.net/sprintf. */
-	$errorMessages[9] = __('the values concatenated by the dot must be consecutive, instead %1$d >= %2$d in the expression <%3$s>',"bibleget-io");
+	$errorMessages[9] = __('The values concatenated by the dot must be consecutive, instead %1$d >= %2$d in the expression <%3$s>',"bibleget-io");
 	$errorMessages[10] = __("A query that doesn't start with a book indicator must however start with a valid chapter indicator!","bibleget-io");
 	
 	$errs= get_option('bibleget_error_admin_notices', array());
@@ -351,7 +359,6 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 						//write_log("myidx = ".$myidx);
             foreach($matches[1] as $match){
 				foreach($indexes as $jkey => $jindex){
-				//trigger_error(print_r($jindex, true));
                 //write_log("jindex array contains:");
                 //write_log($jindex);
 				$bookidx = array_search($myidx,$jindex["book_num"]);
@@ -373,7 +380,8 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 		//write_log("commacount = ".$commacount);
         if($commacount>1){
 							if(!strpos($thisquery,'-')){
-								$errs[] = __("You cannot have more than one colon and not have a dash!","bibleget-io")." <".$thisquery.">";
+								/* translators: 'commas', 'dots', and 'dashes' refer to the bible citation notation; in some notations (such as english notation) colons are used instead of commas, and commas are used instead of dots */
+								$errs[] = __("You cannot have more than one comma and not have a dash!","bibleget-io")." <".$thisquery.">";
 								update_option('bibleget_error_admin_notices',$errs);	
 								return false;
 							}
@@ -651,7 +659,8 @@ function getMetaData($request){
 	$response = curl_exec($ch);
 	if(curl_errno($ch)){
 		$optionsurl = admin_url("options-general.php?page=bibleget-settings-admin");
-		$notices[]= sprintf(__("There was a problem communicating with the server. <a href='%s' title='update metadata now'>Metadata needs to be manually updated</a>."),$optionsurl);
+		/* translators: do not change the placeholders or the html markup, though you can translate the anchor title*/
+		$notices[]= sprintf(__("There was a problem communicating with the BibleGet server. <a href=\"%s\" title=\"update metadata now\">Metadata needs to be manually updated</a>."),$optionsurl);
 		update_option('bibleget_error_admin_notices', $notices);
 		return false;
 	}
@@ -660,7 +669,8 @@ function getMetaData($request){
 		//echo 'Took ' . $info['total_time'] . ' seconds to send a request to ' . $info['url'];
 		if($info["http_code"]!=200){
 			$optionsurl = admin_url("options-general.php?page=bibleget-settings-admin");
-			$notices[]= sprintf(__("There may have been a problem communicating with the server. <a href='%s' title='update metadata now'>Metadata needs to be manually updated</a>."),$optionsurl);
+			/* translators: do not change the placeholders or the html markup, though you can translate the anchor title*/
+			$notices[]= sprintf(__("There may have been a problem communicating with the BibleGet server. <a href=\"%s\" title=\"update metadata now\">Metadata needs to be manually updated</a>."),$optionsurl);
 			update_option('bibleget_error_admin_notices', $notices);
 			return false;
 		}		
@@ -674,7 +684,8 @@ function getMetaData($request){
 	}
 	else{
 		$optionsurl = admin_url("options-general.php?page=bibleget-settings-admin");
-		$notices[]= sprintf(__("There may have been a problem communicating with the server. <a href='%s' title='update metadata now'>Metadata needs to be manually updated</a>."),$optionsurl);
+		/* translators: do not change the placeholders or the html markup, though you can translate the anchor title*/
+		$notices[]= sprintf(__("There may have been a problem communicating with the BibleGet server. <a href=\"%s\" title=\"update metadata now\">Metadata needs to be manually updated</a>."),$optionsurl);
 		update_option('bibleget_error_admin_notices', $notices);
 		return false;
 	}
@@ -683,7 +694,7 @@ function getMetaData($request){
 function queryClean($query){
 	// enforce query rules
 	if($query===''){
-		return __("I cannot send an empty query.","bibleget-io");
+		return __("You cannot send an empty query.","bibleget-io");
 	}
 	$query = trim($query);
 	$query = preg_replace('/\s+/', '', $query);
