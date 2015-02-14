@@ -1,11 +1,11 @@
 <?php
 /*
-Plugin Name: BibleGet IO
+Plugin Name: BibleGet I/O
 Version: 1.5
 Plugin URI: http://www.bibleget.io/
-Description: Effettua citazioni della Bibbia al volo, con shortcode [bibleget].
+Description: Easily insert Bible quotes from a choice of Bible versions into your articles or pages with the shortcode [bibleget].
 Author: John Romano D'Orazio
-Author URI: http://johnrdorazio.altervista.org/
+Author URI: http://www.cappellaniauniroma3.org/
 Text Domain: bibleget-io
 Domain Path: /languages/
 License: GPL v3
@@ -127,7 +127,7 @@ function bibleget_shortcode($atts, $content = null) {
   		$versions = isset($options["favorite_version"]) ? explode(",",$options["favorite_version"]) : array();
   	} 	
   	if(count($versions)<1){
-    	$output = '<span style="color:Red;font-weight:bold;">'.__("You must indicate the desired version with the parameter \"version\" (or the desired versions as a comma separated list with the parameter \"versions\")","bibleget-io").'</span>';
+    	$output = '<span style="color:Red;font-weight:bold;">'.__('You must indicate the desired version with the parameter "version" (or the desired versions as a comma separated list with the parameter "versions")',"bibleget-io").'</span>';
        	return '<div class="bibleget-quote-div">' . $output . '</div>';
    	}
 
@@ -142,7 +142,7 @@ function bibleget_shortcode($atts, $content = null) {
    	foreach($versions as $version){
    		if(!in_array($version,$validversions)){
 			$optionsurl = admin_url("options-general.php?page=bibleget-settings-admin");
-   			$output = '<span style="color:Red;font-weight:bold;">'.printf(__("The requested version '%s' is not valid, please check the list of valid versions in the <a href=\"%s\">settings page</a>","bibleget-io"),$version,$optionsurl).'</span>';
+   			$output = '<span style="color:Red;font-weight:bold;">'.printf(__('The requested version "%s" is not valid, please check the list of valid versions in the <a href="%s">settings page</a>',"bibleget-io"),$version,$optionsurl).'</span>';
    			return '<div class="bibleget-quote-div">' . $output . '</div>';
    		}
    	}
@@ -711,7 +711,14 @@ function bibleget_admin_notices() {
 			echo "<div class='error'><p>$notice</p></div>";
 		}
 		delete_option('bibleget_error_admin_notices');
-  }
+	}
+	if ($notices= get_option('bibleget_admin_notices')) {
+		foreach ($notices as $notice) {
+			echo "<div class='updated'><p>$notice</p></div>";
+		}
+		delete_option('bibleget_admin_notices');
+	}
+	
 }
 add_action('admin_notices', 'bibleget_admin_notices');
 
@@ -784,7 +791,19 @@ function SetOptions(){
 			}
 		}
 	}	
+	
+	//we only want the script to die if it's an ajax request...
+	if(isset($_POST["isajax"]) && $_POST["isajax"]==1){
+   		$notices=get_option('bibleget_admin_notices',array());
+   		$notices[]=__("BibleGet Server data has been successfully renewed.","bibleget-io");
+   		update_option('bibleget_admin_notices',$notices);
+		echo "datarefreshed";
+		wp_die();
+	}
 }
+
+add_action( 'wp_ajax_refresh_bibleget_server_data', 'SetOptions' );
+
 
 $langcodes= array(
       "af" => "Afrikaans",
@@ -1094,6 +1113,10 @@ if( is_admin() ){
 	$my_settings_page = new MySettingsPage();
 }
 
+/*
+ * Function write_log
+ * useful for debugging purposes 
+ */
 function write_log ( $log )  {
   $debugfile = get_stylesheet_directory()."/debug.txt";
   $datetime = strftime("%Y%m%d %H:%M:%S",time());

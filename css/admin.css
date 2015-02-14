@@ -95,6 +95,33 @@ span.sub{
 	color: Black;
 }
 
-#bibleget-save-stylesheet-btn {
-	
+.bibleget-dynamic-data {
+	color: Blue;
+	background-color: #DDD;
+	padding: 2px 6px;
+	border: 2px inset White;
+	border-radius: 3px;
+	text-shadow: 1px 1px 1px Black;
+	margin: 0px 6px;
+	font-size: 1.3em;
+	font-family:"Courier";	
+}
+
+.bibleget-dynamic-data-wrapper {
+	border: 1px solid Blue;
+	border-radius: 6px;
+	padding: 9px;
+	background-color: White;
+	width: 50%;
+	color: Blue;
+	margin: 6px;
+}
+
+#versionlangs-ol {
+}
+#versionlangs-ol > li {
+	font-weight: bold;
+}
+#versionlangs-ol > li > ul {
+	font-weight: normal;
 }

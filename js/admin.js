@@ -16,7 +16,7 @@ function get_font_index(fontfamily){
 	return false;
 }
 
-jQuery(document).ready(function(){
+jQuery(document).ready(function($){
 		
 	jQuery(".bibleget-buttonset").buttonset();
 	
@@ -446,6 +446,12 @@ jQuery(document).ready(function(){
 				});
 			}
 		});
+	});
+	
+	jQuery("#bibleget-server-data-renew-btn").click(function(){
+		//check again how to do wordpress ajax, really no need to do a makeshift ajax post to this page
+		data = {action:'refresh_bibleget_server_data',security:obj.ajax_nonce,isajax:1};
+		$.post(obj.ajax_url,data,function(returndata){ if(returndata=="datarefreshed"){ location.reload(true); } });
 	});
 	
 });

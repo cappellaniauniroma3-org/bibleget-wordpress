@@ -8,6 +8,11 @@ class MySettingsPage
     private $options;
     private $options_page_hook;
     private $safe_fonts;
+    private $versionsbylang;
+    private $versionlangs;
+    private $countversionsbylang;
+    private $countversionlangs;
+    private $biblebookslangs;
     
     /**
      * Start up
@@ -31,6 +36,12 @@ class MySettingsPage
     			array("font-family" => "Trebuchet MS", "fallback" => "Helvetica", "generic-family" => "sans-serif"),
     			array("font-family" => "Verdana", "fallback" => "Geneva", "generic-family" => "sans-serif")
     	);
+        $this->versionsbylang = array();
+        $this->versionlangs = array();
+        $this->countversionsbylang = 0;
+        $this->countversionlangs = 0;
+        $this->biblebookslangs = array();
+        
     }
 
     /**
@@ -40,17 +51,19 @@ class MySettingsPage
     {
         // This page will be under "Settings" 
         $this->options_page_hook = add_options_page(
-            'BibleGet I/O Settings',               // $page_title
-            'BibleGet I/O',               // $menu_title
-            'manage_options',                     // $capability
-            'bibleget-settings-admin',            // $menu_slug (Page ID)
-            array( $this, 'create_admin_page' )   // Callback Function
+            'BibleGet I/O Settings',				// $page_title
+            'BibleGet I/O',							// $menu_title
+            'manage_options',						// $capability
+            'bibleget-settings-admin',				// $menu_slug (Page ID)
+            array( $this, 'create_admin_page' )		// Callback Function
         );
         
         add_action('admin_enqueue_scripts', array( $this, 'admin_print_styles') );
         add_action('admin_enqueue_scripts', array( $this, 'admin_print_scripts') );
         add_action('load-'.$this->options_page_hook, array( $this, 'do_on_my_plugin_settings_save') );
-
+        
+        //start populating as soon as possible
+        $this->getVersionsByLang();
     }
 
     /**
@@ -69,7 +82,7 @@ class MySettingsPage
         ?>
         <div id="page-wrap">
             <?php screen_icon(); ?>
-            <h2 id="bibleget-h2"><?php _e("BibleGet IO Settings","bibleget-io") ?></h2>           
+            <h2 id="bibleget-h2"><?php _e("BibleGet I/O Settings","bibleget-io") ?></h2>           
             <div id="form-wrapper" class="leftfloat">
             <form method="post" action="options.php">
             <?php
@@ -103,6 +116,43 @@ class MySettingsPage
            			?></code></pre>
            		</fieldset>
            		<button id="bibleget-save-stylesheet-btn" class="button button-primary"><?php _e("SAVE STYLESHEET","bibleget-io") ?></button>
+        	</div>
+        	<div>
+        		<hr>
+        		<h3><?php _e("Current BibleGet I/O engine information:","bibleget-io") ?></h3>
+        		<ol type="A">
+        			<li><?php 
+            			if($this->countversionsbylang<1 || $this->countversionlangs<1){
+        					echo "Seems like the version info was not yet initialized. Now attempting to initialize...";
+							$this->getVersionsByLang();
+        				}
+        				$b1 = '<b class="bibleget-dynamic-data">';
+        				$b2 = '</b>';
+        				$string1 = $b1.$this->countversionsbylang.$b2;
+        				$string2 = $b1.$this->countversionlangs.$b2;
+        				printf(__("The BibleGet I/O engine currently supports %s versions of the Bible in %s different languages.","bibleget-io"),$string1,$string2);
+        				echo "<br />";
+        				_e("Here is the list of currently supported versions, subdivided by language:","bibleget-io");
+        				echo "<div class=\"bibleget-dynamic-data-wrapper\"><ol id=\"versionlangs-ol\">";
+        				$cc=0;
+        				foreach($this->versionlangs as $lang){
+        					echo '<li>-'.$lang.'-<ul>';
+        					foreach($this->versionsbylang[$lang] as $abbr => $value){
+        						echo '<li>'.(++$cc).') '.$abbr.' — '.$value["fullname"].' ('.$value["year"].')</li>';
+        					}
+        					echo '</ul><div></li>';
+        				}
+        				echo "</ol>";
+        			?></li>
+        			<li><?php 
+        				$string3 = $b1.count($this->biblebookslangs).$b2;
+        				printf(__("The BibleGet I/O engine currently recognizes the names of the books of the Bible in %s different languages:","bibleget-io"),$string3); 
+        				echo "<br />";
+        				echo "<div class=\"bibleget-dynamic-data-wrapper\">".implode(", ",$this->biblebookslangs)."</div>";
+        			?></li>
+        		</ol>
+        		<p><?php _e("This information from the BibleGet server is cached locally to improve performance. If new versions have been added to the BibleGet server or new languages are supported, this information might be outdated. In that case you can click on the button below to renew the information.","bibleget-io"); ?></p>
+        		<button id="bibleget-server-data-renew-btn" class="button button-secondary"><?php _e("RENEW INFORMATION FROM BIBLEGET SERVER","bibleget-io") ?></button>
         	</div>
         </div>
         <?php
@@ -607,54 +657,85 @@ class MySettingsPage
     	echo '</select>';
     	
     }
-
-    public function favorite_version_callback()
+	
+    public function getVersionsByLang()
     {
-    	$versions = get_option("bibleget_versions",array()); //theoretically should be an array
-    	$versionsbylang = array();
-    	$langs = array();    	 
-    	if(count($versions)<1){
-    		SetOptions(); //global function defined in bibleget-io.php
-    		$versions = get_option("bibleget_versions",array());
-    	}    	
     	global $langcodes;
     	global $worldlanguages;
     	$locale = substr(get_locale(),0,2);
+    	
+    	$biblebookslangs = get_option("bibleget_languages",array());
+    	$this->biblebookslangs = array();
+    	foreach($biblebookslangs as $key => $lang){
+    		if(isset($worldlanguages[$lang][$locale])){
+    			$lang = $worldlanguages[$lang][$locale];
+    		}
+    		array_push($this->biblebookslangs,$lang);
+    	}
+    	if(extension_loaded('intl') === true){
+    		collator_asort(collator_create('root'), $this->biblebookslangs);
+    	}else{
+    		array_multisort(array_map('Sortify', $this->biblebookslangs), $this->biblebookslangs);
+    	}
+    	 
+    	$versions = get_option("bibleget_versions",array()); //theoretically should be an array
+    	$versionsbylang = array();
+    	$langs = array();
+    	if(count($versions)<1){
+    		SetOptions(); //global function defined in bibleget-io.php
+    		$versions = get_option("bibleget_versions",array());
+    	}
     	foreach($versions as $abbr => $versioninfo){
-    		 $info = explode("|",$versioninfo);
-    		 $fullname = $info[0];
-    		 $year = $info[1];
-    		 $lang = $langcodes[$info[2]];
-    		 if(isset($worldlanguages[$lang][$locale])){
-				$lang = $worldlanguages[$lang][$locale];
-    		 }
-    		 if(isset($versionsbylang[$lang])){
-    		 	if(isset($versionsbylang[$lang][$abbr])){
-    		 		//how can that be?
-    		 	}
-    		 	else{
-    		 		$versionsbylang[$lang][$abbr] = array("fullname"=>$fullname,"year"=>$year);
-    		 	}
-    		 }
-    		 else{
-				$versionsbylang[$lang] = array();
-				array_push($langs,$lang);
-				$versionsbylang[$lang][$abbr] = array("fullname"=>$fullname,"year"=>$year);
-    		 }
-		}
+    		$info = explode("|",$versioninfo);
+    		$fullname = $info[0];
+    		$year = $info[1];
+    		$lang = $langcodes[$info[2]]; //this gives the english correspondent of the two letter ISO code
+    		if(isset($worldlanguages[$lang][$locale])){
+    			$lang = $worldlanguages[$lang][$locale]; //this will translate the English form into the localized form if available
+    		}
+    		if(isset($versionsbylang[$lang])){
+    			if(isset($versionsbylang[$lang][$abbr])){
+    				//how can that be?
+    			}
+    			else{
+    				$versionsbylang[$lang][$abbr] = array("fullname"=>$fullname,"year"=>$year);
+    			}
+    		}
+    		else{
+    			$versionsbylang[$lang] = array();
+    			array_push($langs,$lang);
+    			$versionsbylang[$lang][$abbr] = array("fullname"=>$fullname,"year"=>$year);
+    		}
+    	}
+    	$this->versionsbylang = $versionsbylang;
+    	 
+    	//count total languages and total versions
+    	$this->countversionlangs = count($versionsbylang);
     	$counter = 0;
-		//ksort($versionsbylang);
-		$counter = count($versionsbylang);
-		foreach($versionsbylang as $lang => $versionbylang){
-			ksort($versionsbylang[$lang]);
-			$counter+=count($versionsbylang[$lang]);
+    	foreach($versionsbylang as $lang => $versionbylang){
+    		ksort($versionsbylang[$lang]);
+    		$counter+=count($versionsbylang[$lang]);
+    	}
+    	$this->countversionsbylang = $counter;
+    	
+    	if(extension_loaded('intl') === true){
+    		collator_asort(collator_create('root'), $langs);
+    	}else{
+    		array_multisort(array_map('Sortify', $langs), $langs);
+    	}
+
+    	$this->versionlangs = $langs;
+    	
+    }
+    
+    public function favorite_version_callback()
+    {
+		//double check to see if the values have been set
+    	if($this->countversionsbylang<1 || $this->countversionslangs<1){
+			$this->getVersionsByLang();
 		}
-		
-		if(extension_loaded('intl') === true){
-			collator_asort(collator_create('root'), $langs);
-		}else{
-			array_multisort(array_map('Sortify', $langs), $langs);
-		}		
+    	
+		$counter = ($this->countversionsbylang + $this->countversionlangs);
 				
 		$selected = array();
 		if(isset( $this->options['favorite_version'] ) && $this->options['favorite_version']){
@@ -662,6 +743,9 @@ class MySettingsPage
 		}
     	$size = $counter<10 ? $counter : 10;
 		echo '<select id="versionselect" size='.$size.' multiple>';
+    	
+    	$langs = $this->versionlangs;
+    	$versionsbylang = $this->versionsbylang;
     	
     	foreach($langs as $lang){
     		echo '<optgroup label="-'.$lang.'-">';
@@ -719,7 +803,7 @@ class MySettingsPage
     			array("font-family" => "Trebuchet MS", "fallback" => "Helvetica", "generic-family" => "sans-serif"),
     			array("font-family" => "Verdana", "fallback" => "Geneva", "generic-family" => "sans-serif")
     	);
-    	$obj = array("options" => $myoptions,"safe_fonts" => $safefonts,"savecss" => plugins_url( 'savecss.php', __FILE__ ));
+    	$obj = array("options" => $myoptions,"safe_fonts" => $safefonts,"savecss" => plugins_url( 'savecss.php', __FILE__ ),'ajax_url' => admin_url( 'admin-ajax.php' ),'ajax_nonce' => wp_create_nonce( "bibleget-data" ));
     	wp_localize_script( 'admin-js', 'obj', $obj );
     	wp_enqueue_script( 'admin-js' );
     }
