@@ -125,3 +125,11 @@ span.sub{
 #versionlangs-ol > li > ul {
 	font-weight: normal;
 }
+
+#bibleget-donate {
+	text-align: center;
+}
+#bibleget-donate button {
+	cursor: pointer;
+	padding: 12px;
+}

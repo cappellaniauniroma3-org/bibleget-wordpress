@@ -156,6 +156,9 @@ class MySettingsPage
         		<p><?php _e("This information from the BibleGet server is cached locally to improve performance. If new versions have been added to the BibleGet server or new languages are supported, this information might be outdated. In that case you can click on the button below to renew the information.","bibleget-io"); ?></p>
         		<button id="bibleget-server-data-renew-btn" class="button button-secondary"><?php _e("RENEW INFORMATION FROM BIBLEGET SERVER","bibleget-io") ?></button>
         	</div>
+        	<hr>
+        	<?php $locale = apply_filters('plugin_locale', get_locale(), 'bibleget-io'); ?>
+        	<div id="bibleget-donate"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HDS7XQKGFHJ58"></a><button><img src="<?php echo plugins_url( 'images/btn_donateCC_LG'.($locale ? '-'.$locale : '').'.gif', __FILE__ ); ?>" /></button></a></div>
         </div>
         <?php
     }
