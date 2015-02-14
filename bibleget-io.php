@@ -278,7 +278,7 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 	/* translators: 'commas', 'dots', and 'dashes' refer to the bible citation notation; in some notations (such as english notation) colons are used instead of commas, and commas are used instead of dots */
 	$errorMessages[0] = __("There cannot be more commas than there are dots.","bibleget-io");
 	$errorMessages[1] = __("You must have a valid chapter following the book indicator!","bibleget-io");
-	$errorMessages[2] = __("The book indicator is not a valid. Please check the documentation for a list of valid book indicators.","bibleget-io");
+	$errorMessages[2] = __("The book indicator is not valid. Please check the documentation for a list of valid book indicators.","bibleget-io");
 	/* translators: 'commas', 'dots', and 'dashes' refer to the bible citation notation; in some notations (such as english notation) colons are used instead of commas, and commas are used instead of dots */
 	$errorMessages[3] = __("You cannot use a dot without first using a comma. A dot is a liason between verses, which are separated from the chapter by a comma.","bibleget-io");
 	/* translators: 'commas', 'dots', and 'dashes' refer to the bible citation notation; in some notations (such as english notation) colons are used instead of commas, and commas are used instead of dots */
