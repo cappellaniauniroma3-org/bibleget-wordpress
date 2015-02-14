@@ -253,8 +253,8 @@ function processQueries($queries,$versions){
 		$thisquery = toProperCase($value); //shouldn't be necessary because already array_mapped, but better safe than sorry
 		if($key===0){
 			if(!preg_match("/^[1-3]{0,1}((\p{L}\p{M}*)+)/",$thisquery)){
-				/* translators: do not change the placeholder <%s> */
-				$notices[] = sprintf(__("The first query <%s> must start with a valid book abbreviation!","bibleget-io"),$thisquery);
+				/* translators: do not change the placeholders <%s> */
+				$notices[] = sprintf(__("The first query <%s> in the querystring <%s> must start with a valid book indicator!","bibleget-io"),$thisquery,implode(";",$queries));
 				continue;
 			}
 		}
@@ -277,8 +277,8 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 	$errorMessages = array();
 	/* translators: 'commas', 'dots', and 'dashes' refer to the bible citation notation; in some notations (such as english notation) colons are used instead of commas, and commas are used instead of dots */
 	$errorMessages[0] = __("There cannot be more commas than there are dots.","bibleget-io");
-	$errorMessages[1] = __("You must have a valid chapter following the book abbreviation!","bibleget-io");
-	$errorMessages[2] = __("The book abbreviation is not a valid abbreviation. Please check the documentation for a list of correct abbreviations.","bibleget-io");
+	$errorMessages[1] = __("You must have a valid chapter following the book indicator!","bibleget-io");
+	$errorMessages[2] = __("The book indicator is not a valid. Please check the documentation for a list of valid book indicators.","bibleget-io");
 	/* translators: 'commas', 'dots', and 'dashes' refer to the bible citation notation; in some notations (such as english notation) colons are used instead of commas, and commas are used instead of dots */
 	$errorMessages[3] = __("You cannot use a dot without first using a comma. A dot is a liason between verses, which are separated from the chapter by a comma.","bibleget-io");
 	/* translators: 'commas', 'dots', and 'dashes' refer to the bible citation notation; in some notations (such as english notation) colons are used instead of commas, and commas are used instead of dots */
