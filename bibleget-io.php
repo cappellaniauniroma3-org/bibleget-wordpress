@@ -127,7 +127,8 @@ function bibleget_shortcode($atts, $content = null) {
   		$versions = isset($options["favorite_version"]) ? explode(",",$options["favorite_version"]) : array();
   	} 	
   	if(count($versions)<1){
-    	$output = '<span style="color:Red;font-weight:bold;">'.__('You must indicate the desired version with the parameter "version" (or the desired versions as a comma separated list with the parameter "versions")',"bibleget-io").'</span>';
+    	/* translators: do NOT translate the parameter names \"version\" or \"versions\" !!! */
+  		$output = '<span style="color:Red;font-weight:bold;">'.__('You must indicate the desired version with the parameter "version" (or the desired versions as a comma separated list with the parameter "versions")',"bibleget-io").'</span>';
        	return '<div class="bibleget-quote-div">' . $output . '</div>';
    	}
 
