@@ -368,7 +368,7 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
                 write_log("match for ".$jkey." = ".$match);
                 if($match>$chapter_limit){
 					/* translators: the expressions <%1$d>, <%2$s>, <%3$s>, and <%4$d> must be left as is, they will be substituted dynamically by values in the script. See http://php.net/sprintf. */
-					$msg = __('A chapter in the query is out of bounds: there is no chapter <%1$d> in <%2$s> in the requested version <%3$s>, the last possible chapter is {%4$d}',"bibleget-io");
+					$msg = __('A chapter in the query is out of bounds: there is no chapter <%1$d> in the book <%2$s> in the requested version <%3$s>, the last possible chapter is <%4$d>',"bibleget-io");
 					$errs[] = sprintf($msg,$match,$thisbook,$jkey,$chapter_limit);
 					update_option('bibleget_error_admin_notices',$errs);	
 					return false;
@@ -399,7 +399,7 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 									$verselimit = intval($chapters_verselimit[$pp[0]-1]);
 									if($pp[1]>$verselimit){
 										/* translators: the expressions <%1$d>, <%2$s>, <%3$d>, <%4$s> and %5$d must be left as is, they will be substituted dynamically by values in the script. See http://php.net/sprintf. */
-										$msg = __('A verse in the query is out of bounds: there is no verse <%1$d> in <%2$s> chapter <%3$d> in the requested version <%4$s>, the last possible verse is %5$d',"bibleget-io");
+										$msg = __('A verse in the query is out of bounds: there is no verse <%1$d> in the book <%2$s> chapter <%3$d> in the requested version <%4$s>, the last possible verse is <%5$d>',"bibleget-io");
 										$errs[] = sprintf($msg,$pp[1],$thisbook,$pp[0],$jkey,$verselimit);
 										update_option('bibleget_error_admin_notices',$errs);	
 										return false;
@@ -409,25 +409,25 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 						}
 						elseif($commacount==1){
 							//write_log("commacount has been detected as 1, now exploding on comma the query [".$thisquery."]");
-              $parts = explode(",",$thisquery);
+              				$parts = explode(",",$thisquery);
 							//write_log($parts);
-              write_log("checking for presence of dashes in the right-side of the comma...");
-              if(strpos($parts[1],'-')){
+             				// write_log("checking for presence of dashes in the right-side of the comma...");
+              				if(strpos($parts[1],'-')){
 								//write_log("a dash has been detected in the right-side of the comma (".$parts[1].")");
-                if(preg_match_all("/[,\.][1-9][0-9]{0,2}\-([1-9][0-9]{0,2})/",$thisquery,$matches)){
+                				if(preg_match_all("/[,\.][1-9][0-9]{0,2}\-([1-9][0-9]{0,2})/",$thisquery,$matches)){
 									if(!is_array($matches[1])){
 										$matches[1] = array($matches[1]);
 									}
 									$highverse = intval(array_pop($matches[1]));
 									//write_log("highverse = ".$highverse);
-                  foreach($indexes as $jkey => $jindex){
+                  					foreach($indexes as $jkey => $jindex){
 										$bookidx = array_search($myidx,$jindex["book_num"]);
 										$chapters_verselimit = $jindex["verse_limit"][$bookidx];
 										$verselimit = intval($chapters_verselimit[intval($parts[0])-1]);
 										//write_log("verselimit for ".$jkey." = ".$verselimit);
-                    if($highverse>$verselimit){
+                    					if($highverse>$verselimit){
 											/* translators: the expressions <%1$d>, <%2$s>, <%3$d>, <%4$s> and %5$d must be left as is, they will be substituted dynamically by values in the script. See http://php.net/sprintf. */
-											$msg = __('A verse in the query is out of bounds: there is no verse <%1$d> in <%2$s> chapter <%3$d> in the requested version <%4$s>, the last possible verse is %5$d',"bibleget-io");
+											$msg = __('A verse in the query is out of bounds: there is no verse <%1$d> in the book <%2$s> at chapter <%3$d> in the requested version <%4$s>, the last possible verse is <%5$d>',"bibleget-io");
 											$errs[] = sprintf($msg,$highverse,$thisbook,$parts[0],$jkey,$verselimit);
 											update_option('bibleget_error_admin_notices',$errs);	
 											return false;
@@ -447,7 +447,7 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 										$verselimit = intval($chapters_verselimit[intval($parts[0])-1]);
 										if($highverse>$verselimit){
 											/* translators: the expressions <%1$d>, <%2$s>, <%3$d>, <%4$s> and %5$d must be left as is, they will be substituted dynamically by values in the script. See http://php.net/sprintf. */
-											$msg = __('A verse in the query is out of bounds: there is no verse <%1$d> in <%2$s> chapter <%3$d> in the requested version <%4$s>, the last possible verse is %5$d',"bibleget-io");
+											$msg = __('A verse in the query is out of bounds: there is no verse <%1$d> in the book <%2$s> at chapter <%3$d> in the requested version <%4$s>, the last possible verse is <%5$d>',"bibleget-io");
 											$errs[] = sprintf($msg,$highverse,$thisbook,$parts[0],$jkey,$verselimit);
 											update_option('bibleget_error_admin_notices',$errs);	
 											return false;
@@ -467,7 +467,7 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 									$verselimit = intval($chapters_verselimit[intval($parts[0])-1]);
 									if($highverse>$verselimit){
 										/* translators: the expressions <%1$d>, <%2$s>, <%3$d>, <%4$s> and %5$d must be left as is, they will be substituted dynamically by values in the script. See http://php.net/sprintf. */
-										$msg = __('A verse in the query is out of bounds: there is no verse <%1$d> in <%2$s> chapter <%3$d> in the requested version <%4$s>, the last possible verse is %5$d',"bibleget-io");
+										$msg = __('A verse in the query is out of bounds: there is no verse <%1$d> in the book <%2$s> at chapter <%3$d> in the requested version <%4$s>, the last possible verse is <%5$d>',"bibleget-io");
 										$errs[] = sprintf($msg,$highverse,$thisbook,$parts[0],$jkey,$verselimit);
 										update_option('bibleget_error_admin_notices',$errs);	
 										return false;
@@ -487,7 +487,7 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 						$chapter_limit = $jindex["chapter_limit"][$bookidx];
 						if(intval($zchapter)>$chapter_limit){
 							/* translators: the expressions <%1$d>, <%2$s>, <%3$s>, and <%4$d> must be left as is, they will be substituted dynamically by values in the script. See http://php.net/sprintf. */
-							$msg = __('A chapter in the query is out of bounds: there is no chapter <%1$d> in <%2$s> in the requested version <%3$s>, the last possible chapter is {%4$d}',"bibleget-io");
+							$msg = __('A chapter in the query is out of bounds: there is no chapter <%1$d> in the book <%2$s> in the requested version <%3$s>, the last possible chapter is <%4$d>',"bibleget-io");
 							$errs[] = sprintf($msg,$zchapter,$thisbook,$jkey,$chapter_limit);
 							update_option('bibleget_error_admin_notices',$errs);	
 							return false;
@@ -526,27 +526,19 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 						$matchesB_LEFT = explode(",",$matchesB[0]);
 						$matchesB_RIGHT = explode(",",$matchesB[1]);
 						if($matchesB_LEFT[0] >= $matchesB_RIGHT[0]){
-							$errs[] = "ERROR in query <".$thisquery.">: " . "chapters must be consecutive. Instead the first chapter indication <" . $matchesB_LEFT[0] . "> is greater than the second chapter indication <". $matchesB_RIGHT[0] ."> in the expression <".$matchB[1].">";
+							/* translators: do not change the placeholders <%s>, they will be substituted dynamically by values in the script. See http://php.net/sprintf. */
+							$errs[] = "ERROR in query <".$thisquery.">: " . sprintf(__("Chapters must be consecutive. Instead the first chapter indicator <%s> is greater than or equal to the second chapter indicator <%s> in the expression <%s>"),$matchesB_LEFT[0],$matchesB_RIGHT[0],$matchB[1]);
 							update_option('bibleget_error_admin_notices',$errs);	
 							return false;
-						}
-						/*
-							else if($matchesB_LEFT[0] == $matchesB_RIGHT[0]){
-						if($matchesB_LEFT[1] >= $matchesB_RIGHT[1]){
-						$err[] = "ERROR in query <".$query.">: " . "verses in the same chapter must be consecutive. Instead the first verse indication <" . $matchesB_LEFT[1] . "> is greater than or equal to the second verse indication <" . $matchesB_RIGHT[1] . ">";
-						}
-						}
-						else{
-						// if chapters are consecutive then verses are too
-						}
-						*/
+						}						
 					}
 					// if there's no comma after, we're dealing with chapter,verse to verse
 					else{
 						$matchesA_temp = explode(",",$matchA[1]);
 						$matchesA = explode("-",$matchesA_temp[1]);
 						if($matchesA[0] >= $matchesA[1]){
-							$errs[] = "ERROR in query <".$thisquery.">: " . "verses in the same chapter must be consecutive. Instead verse <".$matchesA[0]."> is greater than verse <".$matchesA[1].">";
+							/* translators: do not change the placeholders <%s>, they will be substituted dynamically by values in the script. See http://php.net/sprintf. */
+							$errs[] = "ERROR in query <".$thisquery.">: " . sprintf(__("Verses in the same chapter must be consecutive. Instead verse <%s> is greater than verse <%s> in the expression <%s>"),$matchesA[0],$matchesA[1],$matchA[1]);
 							update_option('bibleget_error_admin_notices',$errs);	
 							return false;
 						}
@@ -556,7 +548,8 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 					foreach($matches[1] as $match){
 						$ints = explode("-",$match);
 						if($ints[0] >= $ints[1]){
-							$errs[] = "ERROR in query <".$thisquery.">: " . "verses concatenated by the dash must be consecutive, instead <".$ints[0]."> is greater than or equal to <".$ints[1]."> in the expression <".$match.">";
+							/* translators: do not change the placeholders <%s>, they will be substituted dynamically by values in the script. See http://php.net/sprintf. */
+							$errs[] = "ERROR in query <".$thisquery.">: " . sprintf(__("Verses concatenated by a dash must be consecutive, instead <%s> is greater than or equal to <%s> in the expression <%s>"),$ints[0],$ints[1],$match);
 							update_option('bibleget_error_admin_notices',$errs);	
 							return false;
 						}
@@ -574,7 +567,7 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 				*/
 			}
 			return $thisbook;
-		} // end if from line 225
+		}
 		else{
 			$errs[] = $errorMessages[2]." <".$thisquery.">";
 			update_option('bibleget_error_admin_notices',$errs);	
