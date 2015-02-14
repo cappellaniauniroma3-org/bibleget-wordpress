@@ -399,7 +399,7 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 									$verselimit = intval($chapters_verselimit[$pp[0]-1]);
 									if($pp[1]>$verselimit){
 										/* translators: the expressions <%1$d>, <%2$s>, <%3$d>, <%4$s> and %5$d must be left as is, they will be substituted dynamically by values in the script. See http://php.net/sprintf. */
-										$msg = __('A verse in the query is out of bounds: there is no verse <%1$d> in the book <%2$s> chapter <%3$d> in the requested version <%4$s>, the last possible verse is <%5$d>',"bibleget-io");
+										$msg = __('A verse in the query is out of bounds: there is no verse <%1$d> in the book <%2$s> at chapter <%3$d> in the requested version <%4$s>, the last possible verse is <%5$d>',"bibleget-io");
 										$errs[] = sprintf($msg,$pp[1],$thisbook,$pp[0],$jkey,$verselimit);
 										update_option('bibleget_error_admin_notices',$errs);	
 										return false;

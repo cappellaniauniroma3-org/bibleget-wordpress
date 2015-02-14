@@ -130,6 +130,7 @@ class MySettingsPage
         				$b2 = '</b>';
         				$string1 = $b1.$this->countversionsbylang.$b2;
         				$string2 = $b1.$this->countversionlangs.$b2;
+        				/* translators: please do not change the placeholders %s, they will be substituted dynamically by values in the script. See http://php.net/printf. */
         				printf(__("The BibleGet I/O engine currently supports %s versions of the Bible in %s different languages.","bibleget-io"),$string1,$string2);
         				echo "<br />";
         				_e("Here is the list of currently supported versions, subdivided by language:","bibleget-io");
@@ -146,6 +147,7 @@ class MySettingsPage
         			?></li>
         			<li><?php 
         				$string3 = $b1.count($this->biblebookslangs).$b2;
+        				/* translators: please do not change the placeholders %s, they will be substituted dynamically by values in the script. See http://php.net/printf. */
         				printf(__("The BibleGet I/O engine currently recognizes the names of the books of the Bible in %s different languages:","bibleget-io"),$string3); 
         				echo "<br />";
         				echo "<div class=\"bibleget-dynamic-data-wrapper\">".implode(", ",$this->biblebookslangs)."</div>";
@@ -234,7 +236,7 @@ class MySettingsPage
 
         add_settings_field(
             'fontstyle_verses', 
-            __('Font Style for Verses',"bibleget-io"), 
+            __('Font Style for Text of Verses',"bibleget-io"), 
             array( $this, 'fontstyle_verses_callback' ), 
             'bibleget-settings-admin', 
             'bibleget_settings_section'
