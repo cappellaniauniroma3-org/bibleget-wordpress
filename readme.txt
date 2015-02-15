@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: bible,shortcode,quote,citation
 Requires at least: 3.0.1
 Tested up to: 4.1.0
-Stable tag: 2.1
+Stable tag: 2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -118,6 +118,9 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
 
 == Changelog ==
 
+= 2.2 =
+* Bugfix for jquery-ui dependencies on certain Wordpress installations
+
 = 2.1 =
 * Fix missing images that weren't included correctly in 2.0 release
 
@@ -151,6 +154,9 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
 
 
 == Upgrade Notice ==
+
+= 2.2 =
+This is a major release which uses the new and upgraded BibleGet I/O service engine. Must update.
 
 = 2.1 =
 This is a major release which uses the new and upgraded BibleGet I/O service engine. Must update.

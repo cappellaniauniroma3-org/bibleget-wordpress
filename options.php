@@ -778,10 +778,10 @@ class MySettingsPage
     	if($hook != 'settings_page_bibleget-settings-admin'){
     		return;
 		}
-		$handle = 'jquery-ui-core';
+		$handle = 'jquery-ui';
     	$list = 'registered';
     	if (!wp_script_is( $handle, $list )) {
-			wp_register_script( $handle, '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js');
+			wp_register_script( $handle, '//ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js', array('jquery'));
     		wp_enqueue_script( $handle );
     	}
 
