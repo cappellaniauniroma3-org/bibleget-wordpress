@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: bible,shortcode,quote,citation
 Requires at least: 3.0.1
 Tested up to: 4.1.0
-Stable tag: 2.0
+Stable tag: 2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -111,17 +111,15 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
  è sottinteso che la query viene effettuata sullo stesso libro indicato precedentemente.
  "Gen1,7-9;4,4-5;Es3,19" significa “Genesi capitolo 1, versetti 7 a 9; poi ancora Genesi capitolo 4, versetti 4 a 5; poi Esodo capitolo 3, versetto 19″.
 
-= How come my query doesn't work? I'm using the common notation for Bible citations. =
-
-Make sure you are using the italian standard notation and not the english notation.
-Se la tua query biblica non sta riuscendo, assicurati di utilizzare notazione standard italiana corretta.
-
 == Screenshots ==
 
 1. Screenshot of the options page (screenshot-1.png).
 2. Screenshot of the resulting biblical quote from use of the shortcode in an article (screenshot-2.png).
 
 == Changelog ==
+
+= 2.1 =
+* Fix missing images that weren't included correctly in 2.0 release
 
 = 2.0 =
 * Major version release
@@ -153,6 +151,9 @@ Se la tua query biblica non sta riuscendo, assicurati di utilizzare notazione st
 
 
 == Upgrade Notice ==
+
+= 2.1 =
+This is a major release which uses the new and upgraded BibleGet I/O service engine. Must update.
 
 = 2.0 =
 This is a major release which uses the new and upgraded BibleGet I/O service engine. Must update.
