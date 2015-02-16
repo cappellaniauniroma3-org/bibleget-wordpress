@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: BibleGet I/O
-Version: 2.3
+Version: 2.4
 Plugin URI: http://www.bibleget.io/
 Description: Easily insert Bible quotes from a choice of Bible versions into your articles or pages with the shortcode [bibleget].
 Author: John Romano D'Orazio
@@ -585,16 +585,20 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 
 /* Mighty fine and dandy helper function I created! */
 function toProperCase($txt){
-  preg_match("/\p{L}/u", $txt, $mList, PREG_OFFSET_CAPTURE);
-  $idx=$mList[0][1];
-  $chr = mb_substr($txt,$idx,1,'UTF-8');
-  if(preg_match("/\p{L&}/u",$chr)){
-    $post = mb_substr($txt,$idx+1,null,'UTF-8'); 
-    return mb_substr($txt,0,$idx,'UTF-8') . mb_strtoupper($chr,'UTF-8') . mb_strtolower($post,'UTF-8');
-  }
-  else{
-    return $txt;
-  }
+	//echo "<div style=\"border:3px solid Yellow;\">txt = $txt</div>";
+	preg_match("/\p{L}/u", $txt, $mList, PREG_OFFSET_CAPTURE);
+	$idx=intval($mList[0][1]);
+	//echo "<div style=\"border:3px solid Purple;\">idx = $idx</div>";
+	$chr = mb_substr($txt,$idx,1,'UTF-8');
+	//echo "<div style=\"border:3px solid Pink;\">chr = $chr</div>";
+	if(preg_match("/\p{L&}/u",$chr)){
+		$post = mb_substr($txt,$idx+1,mb_strlen($txt),'UTF-8'); 
+		//echo "<div style=\"border:3px solid Black;\">post = $post</div>";
+		return mb_substr($txt,0,$idx,'UTF-8') . mb_strtoupper($chr,'UTF-8') . mb_strtolower($post,'UTF-8');
+	}
+	else{
+		return $txt;
+	}
 }
 
 function idxOf($needle,$haystack){
@@ -754,7 +758,9 @@ function SetOptions(){
 			}
 		}
 		if(property_exists($metadata,"languages")){
+			//echo "<div style=\"border:3px solid Red;\">languages = ".print_r($metadata->languages,true)."</div>";
 			$languages = array_map("toProperCase",$metadata->languages);
+			//echo "<div style=\"border:3px solid Red;\">languages = ".print_r($languages,true)."</div>";
 			//$languages_str = json_encode($languages);
 			update_option("bibleget_languages",$languages);
 		}		
@@ -1115,6 +1121,7 @@ function Sortify($string)
 require_once(plugin_dir_path( __FILE__ ) . "options.php");
 
 if( is_admin() ){
+	//write_log("about to initialize creation of admin page...");
 	$my_settings_page = new MySettingsPage();
 }
 
@@ -1127,9 +1134,13 @@ function write_log ( $log )  {
   $datetime = strftime("%Y%m%d %H:%M:%S",time());
   if($myfile = fopen($debugfile, "a")){
     if ( is_array( $log ) || is_object( $log ) ) {
-        fwrite($myfile, "[" . $datetime . "] " . print_r( $log, true) ."\n");
+        if(!fwrite($myfile, "[" . $datetime . "] " . print_r( $log, true) ."\n")){
+        	echo '<div style="border: 1px solid Red;background-color:LightRed;">impossible to open or write to: '.$debugfile.'</div>';
+        }
     } else {
-        fwrite($myfile, "[" . $datetime . "] " . $log . "\n");
+        if(!fwrite($myfile, "[" . $datetime . "] " . $log . "\n")){
+        	echo '<div style="border: 1px solid Red;background-color:LightRed;">impossible to open or write to: '.$debugfile.'</div>';
+        }
     }
     fclose($myfile);
   }

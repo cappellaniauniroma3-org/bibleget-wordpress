@@ -71,8 +71,25 @@ class MySettingsPage
      */
     public function create_admin_page()
     {
+        //write_log("creating admin page\n");
         // Set class property
         $this->options = get_option( 'bibleget_settings' );
+        if($this->options === false || !isset($this->options['fontstyle_bookchapter']) ){
+        	// let's set some default options
+        	$this->options = array(
+        			'fontstyle_bookchapter' => 'bold',
+        			'fontstyle_versenumbers' => 'superscript',
+        			'fontstyle_verses' => '',
+        			'fontfamily_bibleget' => 'Palatino Linotype',
+        			'fontsize_bookchapter' => 14,
+        			'fontsize_verses' => 10,
+        			'fontsize_versenumbers' => 8,
+        			'fontcolor_bookchapter' => '#284f29',
+        			'fontcolor_verses' => '#646d73',
+        			'fontcolor_versenumbers' => '#c10005',
+        			'linespacing_verses' => 150
+        	);
+        }
         
         $vsnmstyles = array();
         if(isset($this->options['fontstyle_versenumbers'] ) && $this->options['fontstyle_versenumbers']){
@@ -667,9 +684,16 @@ class MySettingsPage
     {
     	global $langcodes;
     	global $worldlanguages;
-    	$locale = substr(get_locale(),0,2);
-    	
-    	$biblebookslangs = get_option("bibleget_languages",array());
+    	//$locale = substr(get_locale(),0,2);
+    	$locale = substr(apply_filters('plugin_locale', get_locale(), $domain),0,2);
+    	//echo "<div style=\"border:3px solid Red;\">locale = $locale</div>";
+    	$biblebookslangs = get_option("bibleget_languages");
+    	//$biblebookslangs = false;
+    	if($biblebookslangs === false || !is_array($biblebookslangs) || count($biblebookslangs) < 1 ){
+    		SetOptions();
+    		$biblebookslangs = get_option("bibleget_languages");
+    	}
+    	//echo "<div style=\"border:3px solid Red;\">biblebookslangs = ".print_r($biblebookslangs,true)."</div>";
     	$this->biblebookslangs = array();
     	foreach($biblebookslangs as $key => $lang){
     		if(isset($worldlanguages[$lang][$locale])){
@@ -677,12 +701,16 @@ class MySettingsPage
     		}
     		array_push($this->biblebookslangs,$lang);
     	}
+    	
+    	write_log($this->biblebookslangs);
+    	 
     	if(extension_loaded('intl') === true){
     		collator_asort(collator_create('root'), $this->biblebookslangs);
     	}else{
     		array_multisort(array_map('Sortify', $this->biblebookslangs), $this->biblebookslangs);
     	}
-    	 
+    	write_log($this->biblebookslangs); 
+    	
     	$versions = get_option("bibleget_versions",array()); //theoretically should be an array
     	$versionsbylang = array();
     	$langs = array();
@@ -790,8 +818,10 @@ class MySettingsPage
     	wp_register_script( 'admin-js', plugins_url('js/admin.js', __FILE__), array($handle) );
     	$thisoptions = get_option( 'bibleget_settings' );
     	$myoptions = array();
-    	foreach($thisoptions as $key => $option){
-    		$myoptions[$key] = esc_attr($option);
+    	if($thisoptions){
+	    	foreach($thisoptions as $key => $option){
+	    		$myoptions[$key] = esc_attr($option);
+	    	}
     	}
     	$safefonts = array(
     			array("font-family" => "Arial", "fallback" => "Helvetica", "generic-family" => "sans-serif"),
@@ -820,7 +850,22 @@ class MySettingsPage
       if(isset($_GET['settings-updated']) && $_GET['settings-updated']){
           //plugin settings have been saved. Here goes your code
           $this->options = get_option( 'bibleget_settings' );
-          
+          if($this->options === false || !isset($this->options['fontstyle_bookchapter']) ){
+          	// let's set some default options
+          	$this->options = array(
+          		'fontstyle_bookchapter' => 'bold',
+				'fontstyle_versenumbers' => 'superscript',
+				'fontstyle_verses' => '',
+				'fontfamily_bibleget' => 'Palatino Linotype',
+				'fontsize_bookchapter' => 14,
+				'fontsize_verses' => 10,
+				'fontsize_versenumbers' => 8,
+				'fontcolor_bookchapter' => '#284f29',
+				'fontcolor_verses' => '#646d73',
+				'fontcolor_versenumbers' => '#c10005',
+				'linespacing_verses' => 150
+          	);
+          }
           $bookchapter_bold = false;
           $bookchapter_italic = false;
           $bookchapter_underline = false;
