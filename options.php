@@ -643,12 +643,12 @@ class MySettingsPage
             isset( $this->options['linespacing_verses'] ) && $this->options['linespacing_verses'] ? esc_attr( $this->options['linespacing_verses']) : '150'
         );
         */
-    	$vals = [100,150,200];
+    	$vals = array(100,150,200);
     	/* translators: "single" refers to line-spacing: "single line-spacing" */
     	$single = __("single","bibleget-io");
     	/* translators: "double" refers to line-spacing: "double line-spacing" */
     	$double = __("double","bibleget-io");   
-    	$lbls = [$single,"1½",$double];
+    	$lbls = array($single,"1½",$double);
     	echo '<select id="linespacing_verses" name="bibleget_settings[linespacing_verses]">';
     	foreach($vals as $idx => $val){
 			$selected = '';

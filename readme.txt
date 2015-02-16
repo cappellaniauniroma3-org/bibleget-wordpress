@@ -4,11 +4,11 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: bible,shortcode,quote,citation
 Requires at least: 3.0.1
 Tested up to: 4.1.0
-Stable tag: 2.2
+Stable tag: 2.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Creates a shortcode [bibleget] for inserting a Bible quote in an article or a page, using the BibleGet I/O Service endpoint "http://query.bibleget.io".
+Creates a shortcode [bibleget] for inserting Bible quotes in articles or pages using the BibleGet I/O Service endpoint http://query.bibleget.io
 
 == Description ==
 
@@ -113,10 +113,15 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
 
 == Screenshots ==
 
-1. Screenshot of the options page (screenshot-1.png).
-2. Screenshot of the resulting biblical quote from use of the shortcode in an article (screenshot-2.png).
+1. A Bible Quote produced from usage of the shortcode in an article (screenshot-1.png).
+2. Options page - font and style settings (screenshot-2.png).
+3. Options page - edit the CSS stylesheet directly (screenshot-3.png).
+4. Options page - information from the BibleGet server about available versions and supported languages (screenshot-4.png).
 
 == Changelog ==
+
+= 2.3 =
+* Bugfix for versions of PHP < 5.4 that don't support short array syntax
 
 = 2.2 =
 * Bugfix for jquery-ui dependencies on certain Wordpress installations
@@ -154,6 +159,9 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
 
 
 == Upgrade Notice ==
+
+= 2.3 =
+This is a major release which uses the new and upgraded BibleGet I/O service engine. Must update. (plus Bugfixes)
 
 = 2.2 =
 This is a major release which uses the new and upgraded BibleGet I/O service engine. Must update.
