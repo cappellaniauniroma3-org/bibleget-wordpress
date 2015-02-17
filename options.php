@@ -51,11 +51,11 @@ class MySettingsPage
     {
         // This page will be under "Settings" 
         $this->options_page_hook = add_options_page(
-            'BibleGet I/O Settings',				// $page_title
-            'BibleGet I/O',							// $menu_title
-            'manage_options',						// $capability
-            'bibleget-settings-admin',				// $menu_slug (Page ID)
-            array( $this, 'create_admin_page' )		// Callback Function
+            __('BibleGet I/O Settings',"bibleget-io"),	// $page_title
+            'BibleGet I/O',								// $menu_title
+            'manage_options',							// $capability
+            'bibleget-settings-admin',					// $menu_slug (Page ID)
+            array( $this, 'create_admin_page' )			// Callback Function
         );
         
         add_action('admin_enqueue_scripts', array( $this, 'admin_print_styles') );

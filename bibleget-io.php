@@ -298,7 +298,7 @@ function checkQuery($thisquery,$indexes,$thisbook=""){
 	
 	if(preg_match("/^([1-3]{0,1}((\p{L}\p{M}*)+))/",$thisquery,$res)){
 		$thisbook = $res[0];
-		if(!preg_match("/^[1-3]{0,1}((\p{L}\p{M}*)+)[1-9][0-9]{0,2}/",$thisquery) || preg_match_all("/^[1-3]{0,1}((\p{L}\p{M}*)+)/",$thisquery) != preg_match_all("/^[1-3]{0,1}((\p{L}\p{M}*)+)[1-9][0-9]{0,2}/",$thisquery)){
+		if(!preg_match("/^[1-3]{0,1}((\p{L}\p{M}*)+)[1-9][0-9]{0,2}/",$thisquery) || preg_match_all("/^[1-3]{0,1}((\p{L}\p{M}*)+)/",$thisquery,$dummy) != preg_match_all("/^[1-3]{0,1}((\p{L}\p{M}*)+)[1-9][0-9]{0,2}/",$thisquery,$dummy)){
 			$errs[] = $errorMessages[1];			
 			update_option('bibleget_error_admin_notices',$errs);
 			return false;	
@@ -1147,4 +1147,13 @@ function write_log ( $log )  {
   else{
     echo '<div style="border: 1px solid Red;background-color:LightRed;">impossible to open or write to: '.$debugfile.'</div>';
   }
+}
+
+add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'add_action_links' );
+
+function add_action_links ( $links ) {
+	$mylinks = array(
+			'<a href="' . admin_url( 'options-general.php?page=bibleget-settings-admin' ) . '">'.__('Settings').'</a>',
+	);
+	return array_merge( $links, $mylinks );
 }
