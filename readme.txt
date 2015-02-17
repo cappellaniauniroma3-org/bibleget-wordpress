@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: bible,shortcode,quote,citation
 Requires at least: 3.0.1
 Tested up to: 4.1.0
-Stable tag: 2.4
+Stable tag: 2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -120,6 +120,9 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
 
 == Changelog ==
 
+= 2.5 =
+* Bugfix for older versions of PHP that require a third parameter in preg_match_all
+
 = 2.4 =
 * Bugfix for older versions of PHP that don't seem to work correctly with mb_substr
 * Initialize default values for when options haven't been set yet
@@ -163,6 +166,9 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
 
 
 == Upgrade Notice ==
+
+= 2.5 =
+This is a major release which uses the new and upgraded BibleGet I/O service engine. Must update. (plus Bugfixes)
 
 = 2.4 =
 This is a major release which uses the new and upgraded BibleGet I/O service engine. Must update. (plus Bugfixes)
