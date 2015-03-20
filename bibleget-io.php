@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: BibleGet I/O
-Version: 2.5
+Version: 2.6
 Plugin URI: http://www.bibleget.io/
 Description: Easily insert Bible quotes from a choice of Bible versions into your articles or pages with the shortcode [bibleget].
 Author: John Romano D'Orazio
@@ -11,7 +11,7 @@ Domain Path: /languages/
 License: GPL v3
 
 WordPress BibleGet I/O Plugin
-Copyright (C) 20014-2020, John Romano D'Orazio - john.dorazio@cappellaniauniroma3.org
+Copyright (C) 2014-2020, John Romano D'Orazio - john.dorazio@cappellaniauniroma3.org
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

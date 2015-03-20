@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_i
 Tags: bible,shortcode,quote,citation
 Requires at least: 3.0.1
 Tested up to: 4.1.0
-Stable tag: 2.5
+Stable tag: 2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -56,6 +56,9 @@ Das Plugin hat auch eine Einstellungsseite “BibleGet I/O” im Bereich “Eins
 so dass die injizierten Bibelzitaten kann in den Stil Ihrer eigenen Blog / Wordpress-Website passen.
 Nachdem Sie Ihre Auswahl im Bereich Einstellungen vorgenommen haben, denken Sie daran, auf "Speichern" klicken!
 Sie können auch festlegen, im Bereich Einstellungen, um die CSS-Datei direkt bearbeiten, wenn Sie möchten, um eine feinere Kontrolle über das Aussehen haben.
+
+THE AUTHOR WOULD LIKE TO THANK THE FOLLOWING USERS FOR CONTRIBUTED TRANSLATIONS:
+  * SERBIAN TRANSLATION: Ogi Djuraskovic <ognjend@firstsiteguide.com> [firstsiteguide](http://firstsiteguide.com "firstsiteguide")
 
 [BibleGet I/O](
 http://www.bibleget.io/
@@ -120,6 +123,10 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
 
 == Changelog ==
 
+= 2.6 =
+* Minor bugfix undeclared variable on options page
+* Added Serbian translation thanks to Ogi Djuraskovic <ognjend@firstsiteguide.com> [firstsiteguide](http://firstsiteguide.com "firstsiteguide") 
+
 = 2.5 =
 * Bugfix for older versions of PHP that require a third parameter in preg_match_all
 
@@ -166,6 +173,9 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
 
 
 == Upgrade Notice ==
+
+= 2.6 =
+Minor bugfix from version 2.5, added serbian translation.
 
 = 2.5 =
 This is a major release which uses the new and upgraded BibleGet I/O service engine. Must update. (plus Bugfixes)

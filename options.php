@@ -685,6 +685,7 @@ class MySettingsPage
     	global $langcodes;
     	global $worldlanguages;
     	//$locale = substr(get_locale(),0,2);
+    	$domain = 'bibleget-io';
     	$locale = substr(apply_filters('plugin_locale', get_locale(), $domain),0,2);
     	//echo "<div style=\"border:3px solid Red;\">locale = $locale</div>";
     	$biblebookslangs = get_option("bibleget_languages");
