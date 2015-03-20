@@ -1,0 +1,36 @@
+div.results { 
+  border: 1px solid LightGray; 
+  border-radius:6px; 
+  padding: 12px; 
+  margin:12px auto; 
+  width: 80%; 
+  font-family: 'Palatino Linotype'; 
+} 
+
+div.results p.book { 
+  font-weight: bold; 
+  font-style: normal; 
+  font-size: 1.4em; 
+  color: #284f29; 
+  margin: 0px;
+} 
+
+div.results p.verses { 
+  font-weight: normal; 
+  font-style: normal; 
+  line-height: 150%; 
+  color: #646d73; 
+  text-align: justify; 
+  font-size: 1.0em; 
+  margin: 0px;
+} 
+ 
+div.results p.verses span.sup { 
+  font-size: 0.8em; 
+  vertical-align: baseline; 
+  position: relative; 
+  font-weight: normal; 
+  font-style: normal; 
+  color: #c10005; 
+  top: -0.6em; 
+}
