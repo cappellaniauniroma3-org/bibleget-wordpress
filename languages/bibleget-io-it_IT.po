@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: BibleGet I/O 1.5\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/support/plugin/bibleget-io\n"
 "POT-Creation-Date: 2015-02-14 16:29:15+00:00\n"
-"PO-Revision-Date: 2015-02-14 17:47+0100\n"
+"PO-Revision-Date: 2015-03-22 00:23+0100\n"
 "Last-Translator: John R. D'Orazio <donjohn.fmmi@gmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -32,7 +32,7 @@ msgid ""
 "versions in the <a href=\"%s\">settings page</a>"
 msgstr ""
 "La versione richiesta \"%s\" non è valida, si prega verificare l'elenco "
-"delle versioni valida alla <a href=\"%s\">Pagina delle Impostazioni</a>"
+"delle versioni valide alla <a href=\"%s\">Pagina delle Impostazioni</a>"
 
 #. translators: do not translate "shortcode" unless the version of wordpress in
 #. your language uses a translated term to refer to shortcodes

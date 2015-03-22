@@ -985,7 +985,16 @@ class MySettingsPage
         	."  text-decoration: ".($versenumbers_underline ? "underline" : ($versenumbers_strikethrough ? "line-through" : "none"))."; \n"
         	."  color: ".(isset($this->options['fontcolor_versenumbers']) && $this->options['fontcolor_versenumbers'] ? $this->options['fontcolor_versenumbers'] : "Red")."; \n"
         	."  ".($versenumbers_superscript ? "top: -0.6em" : ($versenumbers_subscript ? "bottom: -0.6em" : "top: 0em") )."; \n"
-            ."}";
+            ."} \n"
+        	." \n"
+        	."/* Senseline. A line that is broken to be reading aloud/public speaking. Poetry is included in this category. */ \n"
+			."div.results p.verses span.pof {display: block; text-indent: 0; font-style:italic; margin-top:1em; margin-left:5%; font-family:Serif; } \n"
+			."div.results p.verses span.po {display: block; font-style:italic; margin-left:5%; margin-top:-1%; font-family:Serif; } \n"
+			."div.results p.verses span.pol {display: block; font-style:italic; margin-left:5%; margin-top:-1%; margin-bottom:1em; font-family:Serif; } \n"
+			."div.results p.verses span.pos {display: block; font-style:italic; margin-top:1em; margin-left:5%; font-family:Serif; } \n"
+			."div.results p.verses span.poif {display: block; font-style:italic; margin-left:7%; margin-top:1%; font-family:Serif; } \n"
+			."div.results p.verses span.poi {display: block; font-style:italic; margin-left:7%; margin-top:-1%; font-family:Serif; } \n"
+			."div.results p.verses span.poil {display: block; font-style:italic; margin-left:7%; margin-bottom:1%; font-family:Serif; } \n";
           $cssdata = trim($cssdata);
           $file = plugin_dir_path( __FILE__ ) . 'css/styles.css';
           if(file_exists($file)){

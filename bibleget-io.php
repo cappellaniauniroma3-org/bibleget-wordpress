@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: BibleGet I/O
-Version: 2.7
+Version: 2.8
 Plugin URI: http://www.bibleget.io/
 Description: Easily insert Bible quotes from a choice of Bible versions into your articles or pages with the shortcode [bibleget].
 Author: John Romano D'Orazio
@@ -112,7 +112,9 @@ function bibleget_shortcode($atts, $content = null) {
   $a = shortcode_atts(array(
     'query' => "Matthew1:1-5",
     'version' => "",
-  	'versions' => ""), $atts);
+  	'versions' => "",
+  	'forceversion' => false,
+  	'forcecopyright' => false), $atts);
 	
    	//echo "<div style=\"border:10px solid Blue;\">".$a["query"]."</div>";
   
@@ -139,16 +141,17 @@ function bibleget_shortcode($atts, $content = null) {
    	}
    	$validversions = array_keys($vversions);
    	//echo "<div style=\"border:10px solid Blue;\">".print_r($validversions)."</div>";
-   	
-   	foreach($versions as $version){
-   		if(!in_array($version,$validversions)){
-			$optionsurl = admin_url("options-general.php?page=bibleget-settings-admin");
-   			/* translators: you must not change the placeholders \"%s\" or the html <a href=\"%s\">, </a>  */
-			$output = '<span style="color:Red;font-weight:bold;">'.sprintf(__('The requested version "%s" is not valid, please check the list of valid versions in the <a href="%s">settings page</a>',"bibleget-io"),$version,$optionsurl).'</span>';
-   			return '<div class="bibleget-quote-div">' . $output . '</div>';
-   		}
+   	if($a['forceversion'] != "true"){
+	   	foreach($versions as $version){
+	   		if(!in_array($version,$validversions)){
+				$optionsurl = admin_url("options-general.php?page=bibleget-settings-admin");
+	   			/* translators: you must not change the placeholders \"%s\" or the html <a href=\"%s\">, </a>  */
+				$output = '<span style="color:Red;font-weight:bold;">'.sprintf(__('The requested version "%s" is not valid, please check the list of valid versions in the <a href="%s">settings page</a>',"bibleget-io"),$version,$optionsurl).'</span>';
+	   			return '<div class="bibleget-quote-div">' . $output . '</div>';
+	   		}
+	   	}
    	}
-     
+   	 
     $queries = queryClean($a["query"]);
 	if (is_array ( $queries )) {
 		$goodqueries = processQueries ( $queries, $versions );
@@ -162,6 +165,8 @@ function bibleget_shortcode($atts, $content = null) {
 		$finalquery .= implode ( ";", $goodqueries );
 		$finalquery .= "&version=";
 		$finalquery .= implode ( ",", $versions );
+		if($a['forceversion']=="true"){ $finalquery .= "&forceversion=true"; }
+		if($a['forcecopyright']=="true"){ $finalquery .= "&forcecopyright=true"; }
 		// write_log("value of finalquery = ".$finalquery);
 		if ($finalquery != "") {
 			// $output = $finalquery;
@@ -191,9 +196,16 @@ function queryServer($finalquery){
    	}
    	$output = curl_exec($ch);
    	if($output && !curl_errno($ch)){
-   		// remove style and title tags from the output
+   		// remove style and title tags from the output if they are present (should not be present with more recent BibleGet engine
    		$output = substr($output,0,strpos($output, "<style")) . substr($output,strpos($output, "</style"),strlen($output));
    		$output = substr($output,0,strpos($output, "<title")) . substr($output,strpos($output, "</title"),strlen($output));
+
+   		$count1 = null;
+   		$count2 = null;
+			$output = preg_replace('/&lt;(sm|pof|po|pol|pos|poif|poi|poil|po3|po3l)&gt;/', '<span class="$1">',$output,-1,$count1);
+   		$output = preg_replace('/&lt;\/(sm|pof|po|pol|pos|poif|poi|poil|po3|po3l)&gt;/','</span>',$output,-1,$count2);
+   		//$output .= "<br /><br />Effettuate ".$count1." e ".$count2." sostituzioni.";
+   		
    	}
    	else{
    		$output = '<span style="color:Red;font-weight:bold;">'.__("There was an error communicating with the BibleGet server, please wait a few minutes and try again: ","bibleget-io").' &apos;'.curl_error($ch).'&apos;: '.$finalquery.'</span>';
