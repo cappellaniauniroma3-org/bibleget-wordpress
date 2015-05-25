@@ -3,8 +3,8 @@ Contributors: Lwangaman
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HDS7XQKGFHJ58
 Tags: bible,shortcode,quote,citation
 Requires at least: 3.0.1
-Tested up to: 4.1.0
-Stable tag: 2.8
+Tested up to: 4.2.2
+Stable tag: 2.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -126,6 +126,10 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
 
 == Changelog ==
 
+= 2.9 =
+* Updated for compatibility with latest Wordpress 4.2.2
+* Fixed small bug in css file
+
 = 2.8 =
 * Added specific functionality for parsing NABRE text and applying NABRE specific styles
 
@@ -183,6 +187,9 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
 
 
 == Upgrade Notice ==
+
+= 2.9 =
+Minor update for compatibility with Wordpres 4.2.2
 
 = 2.8 =
 Added Serbian and Polish translations, added specific functionality for parsing NABRE text and applying NABRE specific styles.
