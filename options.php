@@ -83,7 +83,7 @@ class MySettingsPage
         			'fontfamily_bibleget' => 'Palatino Linotype',
         			'fontsize_bookchapter' => 14,
         			'fontsize_verses' => 10,
-        			'fontsize_versenumbers' => 8,
+        			'fontsize_versenumbers' => 7,
         			'fontcolor_bookchapter' => '#284f29',
         			'fontcolor_verses' => '#646d73',
         			'fontcolor_versenumbers' => '#c10005',
@@ -703,14 +703,14 @@ class MySettingsPage
     		array_push($this->biblebookslangs,$lang);
     	}
     	
-    	write_log($this->biblebookslangs);
+    	//write_log($this->biblebookslangs);
     	 
     	if(extension_loaded('intl') === true){
     		collator_asort(collator_create('root'), $this->biblebookslangs);
     	}else{
     		array_multisort(array_map('Sortify', $this->biblebookslangs), $this->biblebookslangs);
     	}
-    	write_log($this->biblebookslangs); 
+    	//write_log($this->biblebookslangs); 
     	
     	$versions = get_option("bibleget_versions",array()); //theoretically should be an array
     	$versionsbylang = array();
@@ -977,7 +977,7 @@ class MySettingsPage
             ."} \n"
             ." \n"
             ."div.results p.verses span.sup { \n"
-            ."  font-size: ".(isset($this->options['fontsize_versenumbers']) && $this->options['fontsize_versenumbers'] ? number_format(($this->options['fontsize_versenumbers'] / 10),1,'.','') : "0.8" )."em; \n"
+            ."  font-size: ".(isset($this->options['fontsize_versenumbers']) && $this->options['fontsize_versenumbers'] ? number_format(($this->options['fontsize_versenumbers'] / 10),1,'.','') : "0.7" )."em; \n"
             ."  vertical-align: baseline; \n"
             ."  position: relative; \n"
             ."  font-weight: ".($versenumbers_bold ? "bold" : "normal")."; \n"
@@ -985,17 +985,19 @@ class MySettingsPage
         	."  text-decoration: ".($versenumbers_underline ? "underline" : ($versenumbers_strikethrough ? "line-through" : "none"))."; \n"
         	."  color: ".(isset($this->options['fontcolor_versenumbers']) && $this->options['fontcolor_versenumbers'] ? $this->options['fontcolor_versenumbers'] : "Red")."; \n"
         	."  ".($versenumbers_superscript ? "top: -0.6em" : ($versenumbers_subscript ? "bottom: -0.6em" : "top: 0em") )."; \n"
+            ."  margin: 0px 3px; \n"
             ."} \n"
         	." \n"
         	."div.results p.verses span.sm { text-transform: lowercase; font-variant: small-caps; } \n"
         	."/* Senseline. A line that is broken to be reading aloud/public speaking. Poetry is included in this category. */ \n"
-			."div.results p.verses span.pof {display: block; text-indent: 0; margin-top:1em; margin-left:5%; font-family:Serif; } \n"
-			."div.results p.verses span.po {display: block; margin-left:5%; margin-top:-1%; font-family:Serif; } \n"
-			."div.results p.verses span.pol {display: block; margin-left:5%; margin-top:-1%; margin-bottom:1em; font-family:Serif; } \n"
-			."div.results p.verses span.pos {display: block; margin-top:1em; margin-left:5%; font-family:Serif; } \n"
-			."div.results p.verses span.poif {display: block; margin-left:7%; margin-top:1%; font-family:Serif; } \n"
-			."div.results p.verses span.poi {display: block; margin-left:7%; margin-top:-1%; font-family:Serif; } \n"
-			."div.results p.verses span.poil {display: block; margin-left:7%; margin-bottom:1%; font-family:Serif; } \n";
+			."div.results p.verses span.pof { display: block; text-indent: 0; margin-top:1em; margin-left:5%; line-height: ".(isset($this->options['linespacing_verses']) && $this->options['linespacing_verses'] ? $this->options['linespacing_verses'] : "150" )."%; } \n"
+			."div.results p.verses span.po { display: block; margin-left:5%; margin-top:-1%; line-height: ".(isset($this->options['linespacing_verses']) && $this->options['linespacing_verses'] ? $this->options['linespacing_verses'] : "150" )."%; } \n"
+			."div.results p.verses span.pol { display: block; margin-left:5%; margin-top:-1%; margin-bottom:1em; line-height: ".(isset($this->options['linespacing_verses']) && $this->options['linespacing_verses'] ? $this->options['linespacing_verses'] : "150" )."%; } \n"
+			."div.results p.verses span.pos { display: block; margin-top:1em; margin-left:5%; line-height: ".(isset($this->options['linespacing_verses']) && $this->options['linespacing_verses'] ? $this->options['linespacing_verses'] : "150" )."%; } \n"
+			."div.results p.verses span.poif { display: inline-block; margin-left:7%; margin-top:1%; line-height: ".(isset($this->options['linespacing_verses']) && $this->options['linespacing_verses'] ? $this->options['linespacing_verses'] : "150" )."%; } \n"
+			."div.results p.verses span.poi { display: block; margin-left:7%; margin-top:-1%; line-height: ".(isset($this->options['linespacing_verses']) && $this->options['linespacing_verses'] ? $this->options['linespacing_verses'] : "150" )."%; } \n"
+			."div.results p.verses span.poil { display: block; margin-left:7%; margin-bottom:1%; line-height: ".(isset($this->options['linespacing_verses']) && $this->options['linespacing_verses'] ? $this->options['linespacing_verses'] : "150" )."%; } \n"
+            ."div.results p.verses span.speaker { font-weight: bold; background-color: #eeeeee; padding: 3px; border-radius: 3px; margin-right: 10px; font-size: ".(isset($this->options['fontsize_versenumbers']) && $this->options['fontsize_versenumbers'] ? number_format((($this->options['fontsize_versenumbers'] / 10) * 0.666666667),1,'.','') : "0.7" )."em; } \n";
           $cssdata = trim($cssdata);
           $file = plugin_dir_path( __FILE__ ) . 'css/styles.css';
           if(file_exists($file)){

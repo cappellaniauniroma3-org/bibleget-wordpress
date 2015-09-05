@@ -3,8 +3,8 @@ Contributors: Lwangaman
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HDS7XQKGFHJ58
 Tags: bible,shortcode,quote,citation
 Requires at least: 3.0.1
-Tested up to: 4.2.2
-Stable tag: 2.9
+Tested up to: 4.3
+Stable tag: 3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -62,6 +62,8 @@ THE AUTHOR WOULD LIKE TO THANK THE FOLLOWING USERS FOR CONTRIBUTED TRANSLATIONS:
 SERBIAN TRANSLATION: Ogi Djuraskovic <ognjend@firstsiteguide.com> WEBSITE: [firstsiteguide](http://firstsiteguide.com "firstsiteguide")
 
 POLISH TRANSLATION: Ula Gnatowska <ula.gnatowska@gmail.com> WEBSITE: [comunità delle beatitudini](http://beatitudini.it/ "comunità delle beatitudini")
+
+GREEK TRANSLATION: anonymous user contribution
 
 [BibleGet I/O](
 http://www.bibleget.io/
@@ -126,6 +128,14 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
 
 == Changelog ==
 
+= 3.0 =
+* Updated for compatibility with Wordpress 4.3
+* Added Greek translation thanks to a user contribution on the translation project website
+* Added French and German translations using automatic translation tools with a minimum quality check (probably can be made better)
+* Enhancement: cache query results locally for 24 hours using the Wordpress Transients API
+* Bugfix: some code that was used for debugging in the testing process, and that created a debug file 'debug.txt', had not been commented out, and debug.txt file was ending up in the current theme folder (can be deleted if present!)
+* A few enhancements on CSS styling, especially for the now released NABRE text  
+
 = 2.9 =
 * Updated for compatibility with latest Wordpress 4.2.2
 * Fixed small bug in css file
@@ -187,6 +197,9 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
 
 
 == Upgrade Notice ==
+
+= 3.0 =
+Bugfixes (please read changelog), compatibility with Wordpress 4.3, caching enhancements
 
 = 2.9 =
 Minor update for compatibility with Wordpres 4.2.2

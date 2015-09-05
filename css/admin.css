@@ -104,7 +104,7 @@ span.sub{
 	text-shadow: 1px 1px 1px Black;
 	margin: 0px 6px;
 	font-size: 1.3em;
-	font-family:"Courier";	
+	font-family: 'Courier New', Courier, monospace;	
 }
 
 .bibleget-dynamic-data-wrapper {
@@ -119,6 +119,7 @@ span.sub{
 
 #versionlangs-ol {
 }
+
 #versionlangs-ol > li {
 	font-weight: bold;
 }

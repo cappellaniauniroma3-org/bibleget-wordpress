@@ -1,39 +1,40 @@
-div.results { 
-  border: 1px solid LightGray; 
-  border-radius:6px; 
-  padding: 12px; 
-  margin:12px auto; 
-  width: 80%; 
-  font-family: 'Palatino Linotype'; 
-} 
+div.results {
+	border: 1px solid LightGray;
+	border-radius: 6px;
+	padding: 12px;
+	margin: 12px auto;
+	width: 80%;
+	font-family: 'Palatino Linotype';
+}
 
-div.results p.book { 
-  font-weight: bold; 
-  font-style: normal; 
-  font-size: 1.4em; 
-  color: #284f29; 
-  margin: 0px;
-} 
+div.results p.book {
+	font-weight: bold;
+	font-style: normal;
+	font-size: 1.4em;
+	color: #284f29;
+	margin: 0px;
+}
 
-div.results p.verses { 
-  font-weight: normal; 
-  font-style: normal; 
-  line-height: 150%; 
-  color: #646d73; 
-  text-align: justify; 
-  font-size: 1.0em; 
-  margin: 0px;
-  font-variant: normal;
-} 
- 
-div.results p.verses span.sup { 
-  font-size: 0.8em; 
-  vertical-align: baseline; 
-  position: relative; 
-  font-weight: normal; 
-  font-style: normal; 
-  color: #c10005; 
-  top: -0.6em; 
+div.results p.verses {
+	font-weight: normal;
+	font-style: normal;
+	line-height: 150%;
+	color: #646d73;
+	text-align: justify;
+	font-size: 1.0em;
+	margin: 0px;
+	font-variant: normal;
+}
+
+div.results p.verses span.sup {
+	font-size: 0.7em;
+	vertical-align: baseline;
+	position: relative;
+	font-weight: normal;
+	font-style: normal;
+	color: #c10005;
+	top: -0.6em;
+	margin: 0px 3px;
 }
 
 div.results p.verses span.sm {
@@ -42,10 +43,62 @@ div.results p.verses span.sm {
 }
 
 /* Senseline. A line that is broken to be reading aloud/public speaking. Poetry is included in this category. */
-div.results p.verses span.pof {display: block; text-indent: 0; font-style:italic; margin-top:1em; margin-left:5%; font-family:Serif; }
-div.results p.verses span.po {display: block; font-style:italic; margin-left:5%; margin-top:-1%; font-family:Serif; }
-div.results p.verses span.pol {display: block; font-style:italic; margin-left:5%; margin-top:-1%; margin-bottom:1em; font-family:Serif; }
-div.results p.verses span.pos {display: block; font-style:italic; margin-top:1em; margin-left:5%; font-family:Serif; }
-div.results p.verses span.poif {display: block; font-style:italic; margin-left:7%; margin-top:1%; font-family:Serif; }
-div.results p.verses span.poi {display: block; font-style:italic; margin-left:7%; margin-top:-1%; font-family:Serif; }
-div.results p.verses span.poil {display: block; font-style:italic; margin-left:7%; margin-bottom:1%; font-family:Serif; }
+div.results p.verses span.pof {
+	display: inline-block;
+	text-indent: 0;
+	margin-top: 1em;
+	margin-left: 5%;
+	line-height: 150%;
+}
+
+div.results p.verses span.po {
+	display: block;
+	margin-left: 5%;
+	margin-top: -1%;
+	line-height: 150%;
+}
+
+div.results p.verses span.pol {
+	display: block;
+	margin-left: 5%;
+	margin-top: -1%;
+	margin-bottom: 1em;
+	line-height: 150%;
+}
+
+div.results p.verses span.pos {
+	display: block;
+	margin-top: 1em;
+	margin-left: 5%;
+	line-height: 150%;
+}
+
+div.results p.verses span.poif {
+	display: inline-block;
+	margin-left: 7%;
+	margin-top: 1%;
+	line-height: 150%;
+}
+
+div.results p.verses span.poi {
+	display: block;
+	margin-left: 7%;
+	margin-top: -1%;
+	line-height: 150%;
+}
+
+div.results p.verses span.poil {
+	display: block;
+	margin-left: 7%;
+	margin-bottom: 1%;
+	line-height: 150%;
+}
+
+div.results p.verses span.speaker {
+	font-weight: bold;
+	background-color: #eeeeee;
+	padding: 3px;
+	border-radius: 3px;
+	margin-right: 10px;
+	font-size: 0.7em;
+}
