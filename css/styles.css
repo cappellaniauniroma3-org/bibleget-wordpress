@@ -44,7 +44,7 @@ div.results p.verses span.sm {
 
 /* Senseline. A line that is broken to be reading aloud/public speaking. Poetry is included in this category. */
 div.results p.verses span.pof {
-	display: inline-block;
+	display: block;
 	text-indent: 0;
 	margin-top: 1em;
 	margin-left: 5%;
@@ -74,7 +74,7 @@ div.results p.verses span.pos {
 }
 
 div.results p.verses span.poif {
-	display: inline-block;
+	display: block;
 	margin-left: 7%;
 	margin-top: 1%;
 	line-height: 150%;

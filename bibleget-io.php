@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: BibleGet I/O
- * Version: 3.0
+ * Version: 3.1
  * Plugin URI: http://www.bibleget.io/
  * Description: Easily insert Bible quotes from a choice of Bible versions into your articles or pages with the shortcode [bibleget].
  * Author: John Romano D'Orazio
@@ -26,6 +26,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+define("PLUGINVERSION","v3_1");
 
 if (! defined ( 'ABSPATH' )) {
 	header ( 'Status: 403 Forbidden' );
@@ -175,6 +177,7 @@ function bibleget_shortcode($atts, $content = null) {
 				$output = str_replace(PHP_EOL, '', $output);
 				set_transient ( md5 ( $finalquery ), $output, 24 * HOUR_IN_SECONDS );
 			}
+			wp_enqueue_script('bibleget-script', plugins_url('js/shortcode.js', __FILE__), array('jquery'), '1.0', true);
 			return '<div class="bibleget-quote-div">' . $output . '</div>';
 		}
 	} else {
@@ -187,7 +190,7 @@ add_shortcode ( 'bibleget', 'bibleget_shortcode' );
 
 
 function queryServer($finalquery) {
-	$ch = curl_init ( "query.bibleget.io/index2.php?" . $finalquery . "&return=html&appid=wordpress&domain=" . urlencode ( $_SERVER ['HTTP_HOST'] ) );
+	$ch = curl_init ( "query.bibleget.io/index2.php?" . $finalquery . "&return=html&appid=wordpress&domain=" . urlencode ( $_SERVER ['HTTP_HOST'] . "&pluginversion=" . PLUGINVERSION ) );
 	curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, TRUE );
 	
 	if (ini_get ( 'safe_mode' ) || ini_get ( 'open_basedir' )) {

@@ -2,9 +2,9 @@
 Contributors: Lwangaman
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=HDS7XQKGFHJ58
 Tags: bible,shortcode,quote,citation
-Requires at least: 3.0.1
+Requires at least: 3.3
 Tested up to: 4.3
-Stable tag: 3.0
+Stable tag: 3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -128,6 +128,9 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
 
 == Changelog ==
 
+= 3.1 =
+* Further enhancements on CSS styling, especially for the NABRE text
+
 = 3.0 =
 * Updated for compatibility with Wordpress 4.3
 * Added Greek translation thanks to a user contribution on the translation project website
@@ -197,6 +200,9 @@ Almeno la prima query deve indicare il nome del libro sul quale effettuare la ri
 
 
 == Upgrade Notice ==
+
+= 3.1 =
+This is a minor update from v3.0 with CSS styling enhancements especially for the NABRE text
 
 = 3.0 =
 Bugfixes (please read changelog), compatibility with Wordpress 4.3, caching enhancements
